@@ -41,20 +41,46 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── CSS VARIABLES FOR DARK MODE ── */
+    :root {
+      --bg: #fafafa;
+      --bg-card: #ffffff;
+      --bg-subtle: #f4f4f5;
+      --border: #e4e4e7;
+      --border-mid: #d4d4d8;
+      --text: #09090b;
+      --text-muted: #71717a;
+      --text-dim: #a1a1aa;
+      --text-mid: #52525b;
+      --dot-color: #d4d4d8;
+    }
+    body.dark {
+      --bg: #09090b;
+      --bg-card: #18181b;
+      --bg-subtle: #27272a;
+      --border: #27272a;
+      --border-mid: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #52525b;
+      --text-mid: #71717a;
+      --dot-color: #27272a;
+    }
+
     body {
-      background: #fafafa;
-      color: #09090b;
+      background: var(--bg);
+      color: var(--text);
       font-family: 'Geist', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* Subtle dot grid background */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: radial-gradient(circle, #d4d4d8 1px, transparent 1px);
+      background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
       background-size: 24px 24px;
       pointer-events: none;
       z-index: 0;
@@ -62,25 +88,13 @@
     }
 
     ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: #fafafa; }
-    ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 99px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 99px; }
 
-    /* shadcn-style card */
-    .card {
-      background: #ffffff;
-      border: 1px solid #e4e4e7;
-      border-radius: 12px;
-    }
-    .card-hover {
-      transition: all 0.2s ease;
-    }
-    .card-hover:hover {
-      border-color: #a1a1aa;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      transform: translateY(-1px);
-    }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+    .card-hover { transition: all 0.2s ease; }
+    .card-hover:hover { border-color: var(--border-mid); box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
 
-    /* shadcn badge variants */
     .badge { display: inline-flex; align-items: center; gap: 4px; padding: 0.15rem 0.6rem; border-radius: 99px; font-family: 'Geist Mono', monospace; font-size: 0.72rem; font-weight: 500; border: 1px solid; }
     .badge-default { background: #09090b; color: #fafafa; border-color: #09090b; }
     .badge-secondary { background: #f4f4f5; color: #3f3f46; border-color: #e4e4e7; }
@@ -88,8 +102,8 @@
     .badge-success { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
     .badge-warning { background: #fffbeb; color: #d97706; border-color: #fde68a; }
     .badge-purple { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
+    .badge-blue { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
 
-    /* shadcn button variants */
     .btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'Geist', sans-serif; font-weight: 500; font-size: 0.875rem; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; border: 1px solid transparent; text-decoration: none; white-space: nowrap; }
     .btn-sm { height: 32px; padding: 0 0.75rem; font-size: 0.8rem; }
     .btn-md { height: 40px; padding: 0 1rem; }
@@ -98,619 +112,281 @@
 
     .btn-default { background: #09090b; color: #fafafa; border-color: #09090b; }
     .btn-default:hover { background: #27272a; }
-
     .btn-secondary { background: #f4f4f5; color: #09090b; border-color: #e4e4e7; }
     .btn-secondary:hover { background: #e4e4e7; }
-
     .btn-outline { background: #ffffff; color: #09090b; border-color: #e4e4e7; }
     .btn-outline:hover { background: #f4f4f5; border-color: #d4d4d8; }
-
     .btn-ghost { background: transparent; color: #3f3f46; border-color: transparent; }
     .btn-ghost:hover { background: #f4f4f5; color: #09090b; }
-
     .btn-accent { background: #7c3aed; color: white; border-color: #7c3aed; }
     .btn-accent:hover { background: #6d28d9; }
-
     .btn-whatsapp { background: #16a34a; color: white; border-color: #16a34a; }
     .btn-whatsapp:hover { background: #15803d; }
 
-    /* shadcn input */
-    .input {
-      height: 40px;
-      width: 100%;
-      padding: 0 0.75rem;
-      border: 1px solid #e4e4e7;
-      border-radius: 8px;
-      background: #ffffff;
-      color: #09090b;
-      font-family: 'Geist', sans-serif;
-      font-size: 0.875rem;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .input::placeholder { color: #a1a1aa; }
-    .input:focus { border-color: #a1a1aa; box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+    .input { height: 40px; width: 100%; padding: 0 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text); font-family: 'Geist', sans-serif; font-size: 0.875rem; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+    .input::placeholder { color: var(--text-dim); }
+    .input:focus { border-color: var(--border-mid); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
 
-    /* Nav */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(250,250,250,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #e4e4e7;
-    }
-    .nav-inner {
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 1.5rem;
-      height: 60px;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 1rem;
-    }
-    .logo {
-      font-family: 'Geist', sans-serif;
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: -0.03em;
-      display: flex; align-items: center; gap: 8px;
-      color: #09090b;
-      text-decoration: none;
-    }
-    .logo-icon {
-      width: 28px; height: 28px;
-      background: #09090b;
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-    }
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(250,250,250,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); transition: background 0.3s; }
+    body.dark nav { background: rgba(9,9,11,0.92); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .logo { font-family: 'Geist', sans-serif; font-weight: 700; font-size: 1.1rem; letter-spacing: -0.03em; display: flex; align-items: center; gap: 8px; color: var(--text); text-decoration: none; }
+    .logo-icon { width: 28px; height: 28px; background: #09090b; border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+    body.dark .logo-icon { background: #fafafa; }
+    body.dark .logo-icon i { color: #09090b !important; }
     .nav-links { display: flex; align-items: center; gap: 0.125rem; }
-    .nav-link {
-      padding: 0.4rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #52525b;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-    .nav-link:hover { background: #f4f4f5; color: #09090b; }
+    .nav-link { padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500; color: var(--text-mid); text-decoration: none; transition: all 0.15s; }
+    .nav-link:hover { background: var(--bg-subtle); color: var(--text); }
+    .sep { width: 1px; height: 20px; background: var(--border); }
 
-    /* separator */
-    .sep { width: 1px; height: 20px; background: #e4e4e7; }
-
-    /* Hero */
-    .hero {
-      position: relative; z-index: 1;
-      max-width: 1200px; margin: 0 auto;
-      padding: 5rem 1.5rem 4rem;
-      text-align: center;
-    }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 0.3rem 0.8rem;
-      border-radius: 99px;
-      border: 1px solid #e4e4e7;
-      background: #ffffff;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: #52525b;
-      font-family: 'Geist Mono', monospace;
-      margin-bottom: 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; animation: pulse 2s infinite; }
-    .hero h1 {
-      font-weight: 800;
-      font-size: clamp(2.75rem, 6vw, 4.5rem);
-      line-height: 1.1;
-      letter-spacing: -0.04em;
-      margin-bottom: 1.5rem;
-      color: #09090b;
-    }
-    .hero h1 .gradient-text {
-      background: linear-gradient(135deg, #7c3aed, #db2777);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero p {
-      font-size: 1.1rem;
-      color: #71717a;
-      max-width: 520px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.75;
-      font-weight: 400;
-    }
-    .hero-actions {
-      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    /* Stats */
-    .stats-bar {
-      position: relative; z-index: 1;
-      max-width: 780px; margin: 0 auto 4rem;
-      padding: 0 1.5rem;
-    }
-    .stats-inner {
-      background: #ffffff;
-      border: 1px solid #e4e4e7;
-      border-radius: 12px;
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-      overflow: hidden;
-    }
-    .stat {
-      padding: 1.25rem 1.5rem;
-      text-align: center;
-      position: relative;
-    }
-    .stat + .stat::before {
-      content: '';
-      position: absolute; left: 0; top: 20%; height: 60%;
-      width: 1px; background: #e4e4e7;
-    }
-    .stat .num {
-      font-size: 1.875rem;
-      font-weight: 800;
-      color: #09090b;
-      letter-spacing: -0.03em;
-    }
-    .stat .num span { color: #7c3aed; }
-    .stat .label { font-size: 0.78rem; color: #71717a; margin-top: 0.2rem; font-family: 'Geist Mono', monospace; }
-
-    /* Section */
-    .section {
-      position: relative; z-index: 1;
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 1.5rem 4rem;
-    }
-    .section-header {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap; gap: 1rem;
-    }
-    .section-eyebrow {
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: #7c3aed;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.25rem;
-    }
-    .section-header h2 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      color: #09090b;
-    }
-    .view-all {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #71717a;
-      text-decoration: none;
-      font-family: 'Geist Mono', monospace;
-      display: flex; align-items: center; gap: 4px;
-      transition: color 0.15s;
-    }
-    .view-all:hover { color: #09090b; }
-
-    /* Separator line */
-    .section-divider {
-      border: none;
-      border-top: 1px solid #e4e4e7;
-      margin: 0 1.5rem 4rem;
-      max-width: 1200px;
-      margin-left: auto; margin-right: auto;
-    }
-
-    /* Slider */
-    .slider-wrapper { position: relative; overflow: hidden; margin: 0 -0.25rem; }
-    .slider-track {
-      display: flex;
-      gap: 1rem;
-      padding: 0.25rem 0.25rem 1rem;
-      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform;
-    }
-    .ext-card {
-      background: #ffffff;
-      border: 1px solid #e4e4e7;
-      border-radius: 12px;
-      padding: 1.25rem;
+    /* Dark mode toggle button */
+    .dark-toggle {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .dark-toggle:hover { border-color: var(--border-mid); background: var(--bg-subtle); color: var(--text); }
+
+    .hero { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 5rem 1.5rem 4rem; text-align: center; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 6px; padding: 0.3rem 0.8rem; border-radius: 99px; border: 1px solid var(--border); background: var(--bg-card); font-size: 0.78rem; font-weight: 500; color: var(--text-mid); font-family: 'Geist Mono', monospace; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; animation: pulse 2s infinite; }
+    .hero h1 { font-weight: 800; font-size: clamp(2.75rem, 6vw, 4.5rem); line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 1.5rem; color: var(--text); }
+    .hero h1 .gradient-text { background: linear-gradient(135deg, #7c3aed, #db2777); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.75; font-weight: 400; }
+    .hero-actions { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+
+    .stats-bar { position: relative; z-index: 1; max-width: 780px; margin: 0 auto 4rem; padding: 0 1.5rem; }
+    .stats-inner { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: grid; grid-template-columns: repeat(3, 1fr); box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; }
+    .stat { padding: 1.25rem 1.5rem; text-align: center; position: relative; }
+    .stat + .stat::before { content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 1px; background: var(--border); }
+    .stat .num { font-size: 1.875rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; }
+    .stat .num span { color: #7c3aed; }
+    .stat .label { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; font-family: 'Geist Mono', monospace; }
+
+    .section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .section-eyebrow { font-family: 'Geist Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+    .section-header h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text); }
+    .view-all { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); text-decoration: none; font-family: 'Geist Mono', monospace; display: flex; align-items: center; gap: 4px; transition: color 0.15s; }
+    .view-all:hover { color: var(--text); }
+
+    .section-divider { border: none; border-top: 1px solid var(--border); margin: 0 1.5rem 4rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+
+    /* ── INTERNSHIP BANNER ── */
+    .internship-banner { background: #09090b; border: 1px solid #27272a; border-radius: 16px; padding: 3rem; display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: center; position: relative; overflow: hidden; }
+    .internship-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #7c3aed 40%, #2563eb 60%, transparent); }
+    .internship-banner::after { content: ''; position: absolute; bottom: -80px; right: -80px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%); pointer-events: none; }
+    .internship-tag { display: inline-flex; align-items: center; gap: 5px; font-family: 'Geist Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #4ade80; background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); padding: 0.2rem 0.65rem; border-radius: 99px; margin-bottom: 1rem; }
+    .internship-title { font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 800; letter-spacing: -0.04em; color: #fafafa; line-height: 1.1; margin-bottom: 0.875rem; }
+    .internship-desc { font-size: 0.875rem; color: #71717a; line-height: 1.75; max-width: 460px; margin-bottom: 1.5rem; }
+    .internship-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+    .internship-pill { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 0.75rem; border-radius: 6px; background: #18181b; border: 1px solid #27272a; font-family: 'Geist Mono', monospace; font-size: 0.72rem; color: #a1a1aa; }
+    .internship-right { position: relative; z-index: 1; }
+    .internship-card-stack { display: flex; flex-direction: column; gap: 0.625rem; min-width: 240px; }
+    .icard { background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.75rem; transition: border-color 0.2s; }
+    .icard:hover { border-color: #3f3f46; }
+    .icard-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .icard-title { font-size: 0.8rem; font-weight: 600; color: #fafafa; }
+    .icard-sub { font-size: 0.72rem; color: #52525b; font-family: 'Geist Mono', monospace; margin-top: 1px; }
+
+    .intern-benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e4e4e7; border: 1px solid #e4e4e7; border-radius: 14px; overflow: hidden; margin-top: 1px; }
+    .ibenefit-card { background: #ffffff; padding: 1.75rem; display: flex; flex-direction: column; gap: 0.875rem; transition: background 0.15s; }
+    .ibenefit-card:hover { background: #fafafa; }
+    .ibenefit-header { display: flex; align-items: center; justify-content: space-between; }
+    .ibenefit-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ibenefit-title { font-size: 0.925rem; font-weight: 700; color: #09090b; letter-spacing: -0.01em; }
+    .ibenefit-desc { font-size: 0.8rem; color: #71717a; line-height: 1.7; flex: 1; }
+    .ibenefit-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.75rem; border-top: 1px solid #f4f4f5; }
+    .ibenefit-list li { display: flex; align-items: center; gap: 6px; font-size: 0.775rem; color: #52525b; font-family: 'Geist Mono', monospace; }
+
+    .intern-apply-strip { margin-top: 1px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px; padding: 1.25rem 1.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── WHY SECTION ── */
+    .why-section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .why-item { background: var(--bg-card); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; transition: background 0.3s; }
+    .why-icon-wrap { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .why-icon-wrap i { color: var(--text) !important; }
+    .why-title { font-size: 0.9rem; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .why-desc { font-size: 0.825rem; color: var(--text-muted); line-height: 1.65; }
+    .why-stat { font-family: 'Geist Mono', monospace; font-size: 0.72rem; color: var(--text-dim); padding-top: 0.5rem; border-top: 1px solid var(--bg-subtle); display: flex; align-items: center; gap: 4px; }
+    .why-stat .dot-green { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
+
+    /* ── SERVICES ── */
+    .services-section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .service-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden; transition: all 0.2s ease; }
+    .service-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .service-card.featured { background: #09090b; border-color: #27272a; }
+    .service-card.featured::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #7c3aed, #db2777, transparent); }
+    .service-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem; }
+    .service-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .service-title { font-size: 1.05rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+    .service-card.featured .service-title { color: #fafafa; }
+    .service-desc { font-size: 0.825rem; color: var(--text-muted); line-height: 1.65; }
+    .service-price-block { display: flex; align-items: baseline; gap: 0.4rem; margin: 0.5rem 0; }
+    .service-price { font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: -0.04em; }
+    .service-card.featured .service-price { color: #fafafa; }
+    .service-price-unit { font-size: 0.8rem; color: var(--text-dim); font-family: 'Geist Mono', monospace; }
+    .service-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; padding-top: 0.875rem; border-top: 1px solid var(--border); }
+    .service-card.featured .service-list { border-top-color: #27272a; }
+    .service-list li { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; color: var(--text-mid); }
+    .service-card.featured .service-list li { color: #a1a1aa; }
+    .service-btn-wrap { margin-top: auto; padding-top: 1rem; }
+
+    .mentorship-tiers { display: flex; flex-direction: column; gap: 0.75rem; }
+    .tier-row { display: flex; align-items: center; justify-content: space-between; padding: 0.875rem 1rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); transition: all 0.15s; }
+    .tier-row:hover { border-color: var(--border-mid); background: var(--bg-card); }
+    .tier-left { display: flex; align-items: center; gap: 0.75rem; }
+    .tier-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tier-name { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+    .tier-sub { font-size: 0.75rem; color: var(--text-muted); font-family: 'Geist Mono', monospace; margin-top: 1px; }
+    .tier-price { font-size: 1rem; font-weight: 700; color: var(--text); font-family: 'Geist Mono', monospace; }
+    .tier-price span { font-size: 0.72rem; color: var(--text-dim); font-weight: 400; }
+
+    .hire-interns-banner { background: linear-gradient(135deg, #faf5ff 0%, #eff6ff 100%); border: 1px solid #e9d5ff; border-radius: 16px; padding: 2.5rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; position: relative; overflow: hidden; }
+    body.dark .hire-interns-banner { background: linear-gradient(135deg, #1e1030 0%, #0f1a30 100%); border-color: #3b2a6b; }
+    .hire-interns-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #7c3aed, transparent); }
+    .hire-tag { display: inline-flex; align-items: center; gap: 5px; font-family: 'Geist Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #7c3aed; background: #faf5ff; border: 1px solid #e9d5ff; padding: 0.2rem 0.65rem; border-radius: 99px; margin-bottom: 0.875rem; }
+    body.dark .hire-tag { background: rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.3); }
+    .hire-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text); margin-bottom: 0.5rem; }
+    .hire-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; max-width: 460px; margin-bottom: 1.25rem; }
+    .hire-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .hire-pill { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 0.75rem; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border); font-family: 'Geist Mono', monospace; font-size: 0.72rem; color: var(--text-mid); }
+    .hire-right { display: flex; flex-direction: column; gap: 0.625rem; min-width: 200px; }
+    .hire-stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.875rem 1.25rem; text-align: center; }
+    .hire-stat-num { font-size: 1.5rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; }
+    .hire-stat-num span { color: #7c3aed; }
+    .hire-stat-label { font-size: 0.72rem; color: var(--text-muted); font-family: 'Geist Mono', monospace; margin-top: 2px; }
+
+    .payment-strip { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 0.875rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    body.dark .payment-strip { background: rgba(22,163,74,0.08); border-color: rgba(22,163,74,0.2); }
+    .payment-method { display: inline-flex; align-items: center; gap: 5px; font-family: 'Geist Mono', monospace; font-size: 0.75rem; color: #16a34a; font-weight: 500; }
+
+    /* ── FOOTER ── */
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); background: var(--bg-card); transition: background 0.3s; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a { font-size: 0.8rem; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { font-size: 0.75rem; color: var(--text-dim); font-family: 'Geist Mono', monospace; }
+
+    /* ── IBENEFIT cards dark mode ── */
+    .intern-benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-top: 1px; }
+    .ibenefit-card { background: var(--bg-card); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.875rem; transition: background 0.15s; }
+    .ibenefit-card:hover { background: var(--bg); }
+    .ibenefit-header { display: flex; align-items: center; justify-content: space-between; }
+    .ibenefit-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ibenefit-title { font-size: 0.925rem; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+    .ibenefit-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; flex: 1; }
+    .ibenefit-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.75rem; border-top: 1px solid var(--bg-subtle); }
+    .ibenefit-list li { display: flex; align-items: center; gap: 6px; font-size: 0.775rem; color: var(--text-mid); font-family: 'Geist Mono', monospace; }
+    .intern-apply-strip { margin-top: 1px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── PORTFOLIO SECTION ── NEW */
+    .portfolio-section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .portfolio-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       overflow: hidden;
       text-decoration: none;
       display: block;
-      flex: 0 0 calc(33.333% - 0.67rem);
-      min-width: 260px;
-    }
-    .ext-card:hover {
-      border-color: #a1a1aa;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
-    }
-    .ext-card-top {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 0.875rem;
-    }
-    .ext-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.375rem;
-      flex-shrink: 0;
-      border: 1px solid #e4e4e7;
-    }
-    .ext-name {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-      color: #09090b;
-    }
-    .ext-desc {
-      font-size: 0.825rem;
-      color: #71717a;
-      line-height: 1.6;
-      margin-bottom: 0.875rem;
-    }
-    .ext-meta {
-      display: flex; align-items: center; justify-content: space-between;
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.75rem;
-      color: #a1a1aa;
-      padding-top: 0.75rem;
-      border-top: 1px solid #f4f4f5;
-    }
-    .ext-rating { display: flex; align-items: center; gap: 3px; color: #d97706; }
-    .ext-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
-    .ext-tag {
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.7rem;
-      padding: 0.1rem 0.45rem;
-      border-radius: 4px;
-      background: #f4f4f5;
-      color: #71717a;
-      border: 1px solid #e4e4e7;
-    }
-
-    /* Slider controls */
-    .slider-controls {
-      display: flex; align-items: center; justify-content: center; gap: 1rem;
-      margin-top: 1.25rem;
-    }
-    .slider-btn {
-      width: 36px; height: 36px;
-      border-radius: 8px;
-      border: 1px solid #e4e4e7;
-      background: #ffffff;
-      color: #71717a;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s;
-    }
-    .slider-btn:hover { border-color: #a1a1aa; background: #f4f4f5; color: #09090b; }
-    .slider-dots { display: flex; gap: 5px; }
-    .dot-indicator {
-      width: 6px; height: 6px;
-      border-radius: 99px;
-      background: #d4d4d8;
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-    .dot-indicator.active { width: 18px; background: #09090b; }
-
-    /* Category tabs — shadcn style */
-    .categories {
-      display: flex; gap: 0.375rem; flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-    .cat-btn {
-      height: 32px; padding: 0 0.875rem;
-      border-radius: 6px;
-      border: 1px solid #e4e4e7;
-      background: #ffffff;
-      color: #71717a;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: 'Geist', sans-serif;
-      display: flex; align-items: center; gap: 5px;
-    }
-    .cat-btn:hover { background: #f4f4f5; color: #09090b; border-color: #d4d4d8; }
-    .cat-btn.active { background: #09090b; color: #fafafa; border-color: #09090b; }
-
-    /* Search */
-    .search-wrap {
-      max-width: 420px;
-      margin: 0 auto 1.5rem;
+      transition: all 0.2s ease;
       position: relative;
     }
-    .search-wrap .input { height: 40px; padding-left: 2.5rem; }
-    .search-wrap .search-icon {
-      position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
-      color: #a1a1aa; pointer-events: none;
+    .portfolio-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-3px); }
+    .portfolio-card-img {
+      height: 140px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
     }
+    .portfolio-card-body { padding: 1.25rem; }
+    .portfolio-card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; letter-spacing: -0.02em; }
+    .portfolio-card-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.875rem; }
+    .portfolio-card-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .portfolio-tag { font-family: 'Geist Mono', monospace; font-size: 0.68rem; padding: 0.1rem 0.45rem; border-radius: 4px; background: var(--bg-subtle); color: var(--text-muted); border: 1px solid var(--border); }
+    .portfolio-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 0.75rem; border-top: 1px solid var(--border); font-family: 'Geist Mono', monospace; font-size: 0.72rem; color: var(--text-dim); }
+    .portfolio-status { display: flex; align-items: center; gap: 4px; }
+    .portfolio-dot { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
 
-    /* Top Picks */
-    .top-picks-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .pick-card {
-      background: #ffffff;
-      border: 1px solid #e4e4e7;
-      border-radius: 12px;
-      padding: 1.25rem;
-      display: flex; align-items: center; gap: 1rem;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .pick-card:hover { border-color: #a1a1aa; box-shadow: 0 4px 16px rgba(0,0,0,0.07); transform: translateY(-1px); }
-    .pick-icon {
-      width: 48px; height: 48px;
+    /* ── FAQ SECTION ── NEW */
+    .faq-section { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .faq-item {
+      border: 1px solid var(--border);
       border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.75rem;
-      flex-shrink: 0;
-      border: 1px solid #e4e4e7;
-    }
-    .pick-info { flex: 1; min-width: 0; }
-    .pick-name { font-size: 0.9rem; font-weight: 600; color: #09090b; margin-bottom: 0.2rem; }
-    .pick-desc { font-size: 0.78rem; color: #71717a; line-height: 1.5; }
-    .pick-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
-    .pick-star { display: flex; align-items: center; gap: 3px; color: #d97706; font-family: 'Geist Mono', monospace; font-size: 0.75rem; }
-
-    /* Hero pick card */
-    .pick-hero {
-      grid-column: span 2;
-      background: #ffffff;
-      border: 1px solid #e4e4e7;
-      border-radius: 16px;
-      padding: 2.5rem;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 2rem;
-      align-items: center;
-      position: relative; overflow: hidden;
-    }
-    .pick-hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(124,58,237,0.03) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .pick-hero-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: #7c3aed;
-      background: #faf5ff;
-      border: 1px solid #e9d5ff;
-      padding: 0.2rem 0.6rem;
-      border-radius: 99px;
-      margin-bottom: 0.75rem;
-    }
-    .pick-hero h3 {
-      font-size: 1.625rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
-      color: #09090b;
-    }
-    .pick-hero p { color: #71717a; line-height: 1.7; font-size: 0.9rem; margin-bottom: 1rem; max-width: 480px; }
-    .pick-hero-img {
-      width: 100px; height: 100px;
-      background: #f4f4f5;
-      border-radius: 20px;
-      border: 1px solid #e4e4e7;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem;
-      flex-shrink: 0;
-    }
-
-    /* CTA */
-    .cta-section {
-      position: relative; z-index: 1;
-      max-width: 1200px; margin: 0 auto 4rem;
-      padding: 0 1.5rem;
-    }
-    .cta-card {
-      background: #09090b;
-      border: 1px solid #27272a;
-      border-radius: 16px;
-      padding: 3rem;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 2rem;
-      align-items: center;
-      position: relative; overflow: hidden;
-    }
-    .cta-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 1px;
-      background: linear-gradient(90deg, transparent, #7c3aed, #db2777, transparent);
-    }
-    .cta-card::after {
-      content: '';
-      position: absolute; top: -60px; right: -60px;
-      width: 250px; height: 250px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%);
-    }
-    .cta-left { position: relative; z-index: 1; }
-    .cta-eyebrow {
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: #a78bfa;
-      margin-bottom: 0.75rem;
-      display: flex; align-items: center; gap: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .cta-card h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
       margin-bottom: 0.625rem;
-      line-height: 1.2;
-      color: #fafafa;
+      background: var(--bg-card);
+      overflow: hidden;
+      transition: border-color 0.15s;
     }
-    .cta-card h2 span {
-      background: linear-gradient(135deg, #a78bfa, #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .faq-item:hover { border-color: var(--border-mid); }
+    .faq-item.open { border-color: var(--border-mid); }
+    .faq-question {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: 'Geist', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
     }
-    .cta-card p { color: #71717a; font-size: 0.9rem; line-height: 1.7; max-width: 440px; margin-bottom: 2rem; }
-    .cta-features { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
-    .cta-feat {
-      display: flex; align-items: center; gap: 5px;
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.75rem;
-      color: #71717a;
+    .faq-question:hover { background: var(--bg-subtle); }
+    .faq-icon { width: 20px; height: 20px; border-radius: 5px; background: var(--bg-subtle); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; color: var(--text-muted); }
+    .faq-item.open .faq-icon { background: #09090b; border-color: #09090b; color: #fafafa; transform: rotate(45deg); }
+    body.dark .faq-item.open .faq-icon { background: #fafafa; color: #09090b; }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.2s;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      padding: 0 1.25rem;
     }
-    .cta-feat svg { color: #16a34a; }
-    .cta-buttons { display: flex; gap: 0.625rem; flex-wrap: wrap; }
-    .cta-right {
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column; align-items: center; gap: 1rem;
-    }
-    .cta-phone-badge {
-      background: #18181b;
-      border: 1px solid #27272a;
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
-      text-align: center;
-      min-width: 170px;
-    }
-    .cta-phone-badge .phone-label { font-family: 'Geist Mono', monospace; font-size: 0.68rem; color: #71717a; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    .cta-phone-badge .phone-num { font-family: 'Geist', sans-serif; font-size: 1rem; font-weight: 600; color: #4ade80; }
-    .cta-status {
-      display: flex; align-items: center; gap: 5px;
-      font-family: 'Geist Mono', monospace; font-size: 0.72rem; color: #52525b;
-    }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+    .faq-item.open .faq-answer { max-height: 200px; padding: 0 1.25rem 1.1rem; }
 
-    /* Phone mockup */
-    .phone-float {
-      position: fixed;
-      right: -8px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 50;
-      pointer-events: none;
-      animation: phoneFloat 6s ease-in-out infinite;
-    }
-    @keyframes phoneFloat {
-      0%, 100% { transform: translateY(-50%) translateY(0px) rotate(3deg); }
-      50%       { transform: translateY(-50%) translateY(-14px) rotate(3deg); }
-    }
-    .phone-body {
-      width: 140px; height: 285px;
-      background: #ffffff;
-      border-radius: 28px;
-      border: 1.5px solid #e4e4e7;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
-      position: relative; overflow: hidden;
-      display: flex; flex-direction: column;
-    }
-    .phone-notch {
-      width: 48px; height: 14px;
-      background: #09090b;
-      border-radius: 0 0 10px 10px;
-      margin: 0 auto;
-      flex-shrink: 0;
-      position: relative; z-index: 2;
-      display: flex; align-items: center; justify-content: center;
-      gap: 4px;
-    }
+    /* ── PHONE FLOAT ── */
+    .phone-float { position: fixed; right: -8px; top: 50%; transform: translateY(-50%); z-index: 50; pointer-events: none; animation: phoneFloat 6s ease-in-out infinite; }
+    @keyframes phoneFloat { 0%, 100% { transform: translateY(-50%) translateY(0px) rotate(3deg); } 50% { transform: translateY(-50%) translateY(-14px) rotate(3deg); } }
+    .phone-body { width: 140px; height: 285px; background: #ffffff; border-radius: 28px; border: 1.5px solid #e4e4e7; box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+    .phone-notch { width: 48px; height: 14px; background: #09090b; border-radius: 0 0 10px 10px; margin: 0 auto; flex-shrink: 0; position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .phone-notch::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #27272a; }
     .phone-notch::after { content: ''; width: 16px; height: 3px; border-radius: 2px; background: #27272a; }
-    .phone-screen {
-      flex: 1; padding: 6px 7px 8px;
-      display: flex; flex-direction: column; gap: 4px;
-      overflow: hidden;
-      background: #fafafa;
-    }
-    .phone-status {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 2px;
-    }
+    .phone-screen { flex: 1; padding: 6px 7px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; background: #fafafa; }
+    .phone-status { display: flex; justify-content: space-between; align-items: center; padding: 0 2px; }
     .phone-status span { font-family: 'Geist Mono', monospace; font-size: 6.5px; color: #71717a; }
-    .phone-ext-popup {
-      background: #ffffff;
-      border: 1px solid #e4e4e7;
-      border-radius: 8px;
-      padding: 6px 7px;
-      display: flex; align-items: center; gap: 5px;
-      animation: popupSlide 0.5s ease both;
-      transition: all 0.3s ease;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
+    .phone-ext-popup { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px; padding: 6px 7px; display: flex; align-items: center; gap: 5px; animation: popupSlide 0.5s ease both; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
     .phone-ext-popup.delay1 { animation-delay: 0.1s; }
     .phone-ext-popup.delay2 { animation-delay: 0.2s; }
     .phone-ext-popup.delay3 { animation-delay: 0.3s; }
-    @keyframes popupSlide {
-      from { opacity: 0; transform: translateX(10px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
+    @keyframes popupSlide { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
     .popup-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
     .popup-info { flex: 1; min-width: 0; }
     .popup-name { font-family: 'Geist', sans-serif; font-size: 7px; font-weight: 600; color: #09090b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .popup-sub { font-family: 'Geist Mono', monospace; font-size: 5.5px; color: #a1a1aa; margin-top: 1px; }
     .popup-dot { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; flex-shrink: 0; animation: pulse 2s infinite; }
-    .phone-scan-bar {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #7c3aed, transparent);
-      animation: scanBar 2.5s ease-in-out infinite;
-      margin: 1px 0; opacity: 0.5;
-    }
-    @keyframes scanBar {
-      0%   { transform: translateY(0); opacity: 0; }
-      20%  { opacity: 0.7; }
-      80%  { opacity: 0.7; }
-      100% { transform: translateY(160px); opacity: 0; }
-    }
+    .phone-scan-bar { height: 1px; background: linear-gradient(90deg, transparent, #7c3aed, transparent); animation: scanBar 2.5s ease-in-out infinite; margin: 1px 0; opacity: 0.5; }
+    @keyframes scanBar { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 0.7; } 80% { opacity: 0.7; } 100% { transform: translateY(160px); opacity: 0; } }
     .phone-home { width: 36px; height: 3px; background: #d4d4d8; border-radius: 2px; margin: 0 auto 5px; flex-shrink: 0; }
     .phone-btn-right { position: absolute; right: -2px; top: 65px; width: 2px; height: 32px; background: #d4d4d8; border-radius: 0 2px 2px 0; }
     .phone-btn-left1 { position: absolute; left: -2px; top: 55px; width: 2px; height: 18px; background: #d4d4d8; border-radius: 2px 0 0 2px; }
     .phone-btn-left2 { position: absolute; left: -2px; top: 80px; width: 2px; height: 26px; background: #d4d4d8; border-radius: 2px 0 0 2px; }
     .phone-glow { width: 70px; height: 12px; background: #7c3aed; filter: blur(14px); opacity: 0.2; margin: 5px auto 0; border-radius: 50%; animation: phoneFloat 6s ease-in-out infinite; }
-
     @media (max-width: 1100px) { .phone-float { display: none; } }
-
-    /* Footer */
-    footer {
-      position: relative; z-index: 1;
-      border-top: 1px solid #e4e4e7;
-      background: #ffffff;
-    }
-    .footer-inner {
-      max-width: 1200px; margin: 0 auto;
-      padding: 1.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 1rem;
-    }
-    .footer-links { display: flex; gap: 1.25rem; }
-    .footer-links a { font-size: 0.8rem; color: #71717a; text-decoration: none; transition: color 0.15s; }
-    .footer-links a:hover { color: #09090b; }
-    .footer-copy { font-size: 0.75rem; color: #a1a1aa; font-family: 'Geist Mono', monospace; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
 
     .anim-1 { animation: fadeUp 0.5s ease both; }
     .anim-2 { animation: fadeUp 0.5s 0.08s ease both; }
@@ -718,299 +394,50 @@
     .anim-4 { animation: fadeUp 0.5s 0.24s ease both; }
     .anim-5 { animation: fadeUp 0.5s 0.32s ease both; }
 
-    /* ── INTERNSHIP BANNER ── */
-    .internship-banner {
-      background: #09090b;
-      border: 1px solid #27272a;
-      border-radius: 16px;
-      padding: 3rem;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 3rem;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .internship-banner::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #7c3aed 40%, #2563eb 60%, transparent);
-    }
-    .internship-banner::after {
-      content: '';
-      position: absolute; bottom: -80px; right: -80px;
-      width: 280px; height: 280px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%);
-      pointer-events: none;
-    }
-    .internship-tag {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: #4ade80;
-      background: rgba(74,222,128,0.08);
-      border: 1px solid rgba(74,222,128,0.2);
-      padding: 0.2rem 0.65rem;
-      border-radius: 99px;
-      margin-bottom: 1rem;
-    }
-    .internship-title {
-      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      color: #fafafa;
-      line-height: 1.1;
-      margin-bottom: 0.875rem;
-    }
-    .internship-desc {
-      font-size: 0.875rem;
-      color: #71717a;
-      line-height: 1.75;
-      max-width: 460px;
-      margin-bottom: 1.5rem;
-    }
-    .internship-pills {
-      display: flex; gap: 0.5rem; flex-wrap: wrap;
-      margin-bottom: 1.75rem;
-    }
-    .internship-pill {
-      display: inline-flex; align-items: center; gap: 5px;
-      height: 28px; padding: 0 0.75rem;
-      border-radius: 6px;
-      background: #18181b;
-      border: 1px solid #27272a;
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      color: #a1a1aa;
-    }
-    .internship-right { position: relative; z-index: 1; }
-    .internship-card-stack {
-      display: flex; flex-direction: column; gap: 0.625rem;
-      min-width: 240px;
-    }
-    .icard {
-      background: #18181b;
-      border: 1px solid #27272a;
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      display: flex; align-items: center; gap: 0.75rem;
-      transition: border-color 0.2s;
-    }
-    .icard:hover { border-color: #3f3f46; }
-    .icard-icon {
-      width: 34px; height: 34px;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .icard-title { font-size: 0.8rem; font-weight: 600; color: #fafafa; }
-    .icard-sub { font-size: 0.72rem; color: #52525b; font-family: 'Geist Mono', monospace; margin-top: 1px; }
+    /* ── CTA ── */
+    .cta-section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto 4rem; padding: 0 1.5rem; }
+    .cta-card { background: #09090b; border: 1px solid #27272a; border-radius: 16px; padding: 3rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; position: relative; overflow: hidden; }
+    .cta-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, #7c3aed, #db2777, transparent); }
+    .cta-card::after { content: ''; position: absolute; top: -60px; right: -60px; width: 250px; height: 250px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%); }
+    .cta-left { position: relative; z-index: 1; }
+    .cta-eyebrow { font-family: 'Geist Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #a78bfa; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .cta-card h2 { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 0.625rem; line-height: 1.2; color: #fafafa; }
+    .cta-card h2 span { background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cta-card p { color: #71717a; font-size: 0.9rem; line-height: 1.7; max-width: 440px; margin-bottom: 2rem; }
+    .cta-features { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+    .cta-feat { display: flex; align-items: center; gap: 5px; font-family: 'Geist Mono', monospace; font-size: 0.75rem; color: #71717a; }
+    .cta-buttons { display: flex; gap: 0.625rem; flex-wrap: wrap; }
+    .cta-right { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .cta-phone-badge { background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 1rem 1.5rem; text-align: center; min-width: 170px; }
+    .cta-phone-badge .phone-label { font-family: 'Geist Mono', monospace; font-size: 0.68rem; color: #71717a; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cta-phone-badge .phone-num { font-family: 'Geist', sans-serif; font-size: 1rem; font-weight: 600; color: #4ade80; }
+    .cta-status { display: flex; align-items: center; gap: 5px; font-family: 'Geist Mono', monospace; font-size: 0.72rem; color: #52525b; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .anim-1 { animation: fadeUp 0.5s ease both; }
+    .anim-2 { animation: fadeUp 0.5s 0.08s ease both; }
+    .anim-3 { animation: fadeUp 0.5s 0.16s ease both; }
+    .anim-4 { animation: fadeUp 0.5s 0.24s ease both; }
+    .anim-5 { animation: fadeUp 0.5s 0.32s ease both; }
 
     @media (max-width: 768px) {
       .internship-banner { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
       .internship-right { display: none; }
-    }
-
-    /* Benefits grid */
-    .intern-benefits-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: #e4e4e7;
-      border: 1px solid #e4e4e7;
-      border-radius: 14px;
-      overflow: hidden;
-      margin-top: 1px;
-    }
-    .ibenefit-card {
-      background: #ffffff;
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.875rem;
-      transition: background 0.15s;
-    }
-    .ibenefit-card:hover { background: #fafafa; }
-    .ibenefit-header {
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .ibenefit-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .ibenefit-title {
-      font-size: 0.925rem;
-      font-weight: 700;
-      color: #09090b;
-      letter-spacing: -0.01em;
-    }
-    .ibenefit-desc {
-      font-size: 0.8rem;
-      color: #71717a;
-      line-height: 1.7;
-      flex: 1;
-    }
-    .ibenefit-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid #f4f4f5;
-    }
-    .ibenefit-list li {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.775rem;
-      color: #52525b;
-      font-family: 'Geist Mono', monospace;
-    }
-
-    /* Apply strip */
-    .intern-apply-strip {
-      margin-top: 1px;
-      background: #fafafa;
-      border: 1px solid #e4e4e7;
-      border-radius: 12px;
-      padding: 1.25rem 1.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 768px) {
       .intern-benefits-grid { grid-template-columns: 1fr; }
       .intern-apply-strip { flex-direction: column; align-items: flex-start; }
-    }
-
-    /* ── WHY SECTION ── */
-    .why-section {
-      position: relative; z-index: 1;
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 1.5rem 4rem;
-    }
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: #e4e4e7;
-      border: 1px solid #e4e4e7;
-      border-radius: 14px;
-      overflow: hidden;
-    }
-    .why-item {
-      background: #ffffff;
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .why-icon-wrap {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      border: 1px solid #e4e4e7;
-      background: #fafafa;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .why-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #09090b;
-      letter-spacing: -0.01em;
-    }
-    .why-desc {
-      font-size: 0.825rem;
-      color: #71717a;
-      line-height: 1.65;
-    }
-    .why-stat {
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      color: #a1a1aa;
-      padding-top: 0.5rem;
-      border-top: 1px solid #f4f4f5;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .why-stat .dot-green { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
-
-    /* ── HOOK / TRY SECTION ── */
-    .hook-section {
-      position: relative; z-index: 1;
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 1.5rem 4rem;
-    }
-    .hook-card {
-      border: 1px solid #e4e4e7;
-      border-radius: 14px;
-      padding: 3.5rem 2rem;
-      text-align: center;
-      background: #ffffff;
-      position: relative;
-      overflow: hidden;
-    }
-    .hook-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent 0%, #09090b 30%, #09090b 70%, transparent 100%);
-    }
-    .hook-kicker {
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 1.25rem;
-    }
-    .hook-headline {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.05em;
-      color: #09090b;
-      line-height: 1.05;
-      margin-bottom: 1rem;
-    }
-    .hook-headline .strike {
-      text-decoration: line-through;
-      color: #d4d4d8;
-    }
-    .hook-sub {
-      font-size: 0.95rem;
-      color: #71717a;
-      max-width: 420px;
-      margin: 0 auto 2rem;
-      line-height: 1.7;
-    }
-    .hook-cta-row {
-      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    .hook-note {
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.72rem;
-      color: #a1a1aa;
-      margin-top: 1rem;
-    }
-
-    @media (max-width: 768px) {
-      .top-picks-grid { grid-template-columns: 1fr; }
-      .pick-hero { grid-template-columns: 1fr; grid-column: span 1; }
-      .pick-hero-img { display: none; }
       .cta-card { grid-template-columns: 1fr; }
       .cta-right { display: none; }
       .stats-inner { grid-template-columns: 1fr; }
       .nav-links { display: none; }
-      .ext-card { flex: 0 0 80vw; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
       .why-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .hire-interns-banner { grid-template-columns: 1fr; }
+      .hire-right { display: none; }
+      .portfolio-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1068,25 +495,31 @@
   <div class="nav-inner">
     <a href="#" class="logo">
       <div class="logo-icon">
-        <i data-lucide="puzzle" style="width:14px;height:14px;color:white;"></i>
+        <i data-lucide="code" style="width:14px;height:14px;color:white;"></i>
       </div>
-      ExtEngineer
+      WebEngineer
     </a>
     <div class="nav-links">
-      <a href="#extensions" class="nav-link">Extensions</a>
-      <a href="#categories" class="nav-link">Categories</a>
       <a href="#internship" class="nav-link">Internship</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#portfolio" class="nav-link">Portfolio</a>
+      <a href="#faq" class="nav-link">FAQ</a>
       <a href="#hire" class="nav-link">Hire Us</a>
     </div>
     <div style="display:flex;align-items:center;gap:0.5rem;">
+      <!-- Dark Mode Toggle -->
+      <button class="dark-toggle" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode">
+        <i data-lucide="moon" style="width:15px;height:15px;" id="toggle-icon"></i>
+      </button>
+      <div class="sep"></div>
       <a href="#" class="btn btn-ghost btn-md">
         <i data-lucide="github" style="width:15px;height:15px;"></i>
         GitHub
       </a>
       <div class="sep"></div>
-      <a href="#extensions" class="btn btn-default btn-md">
-        <i data-lucide="search" style="width:14px;height:14px;"></i>
-        Browse
+      <a href="https://wa.me/923196977218" target="_blank" class="btn btn-default btn-md">
+        <i data-lucide="message-circle" style="width:14px;height:14px;"></i>
+        Contact
       </a>
     </div>
   </div>
@@ -1097,22 +530,22 @@
   <div class="anim-1">
     <div class="hero-eyebrow">
       <span class="dot"></span>
-      100+ Handpicked Browser Extensions
+      5+ Years Experience · Web Developer
     </div>
   </div>
   <h1 class="anim-2">
-    Power up your browser.<br/>
-    <span class="gradient-text">Build smarter workflows.</span>
+    Build. Learn. Grow.<br/>
+    <span class="gradient-text">With a real developer.</span>
   </h1>
-  <p class="anim-3">Ext Engineer curates the best browser extensions for developers, designers, and power users. Stop searching — start building.</p>
+  <p class="anim-3">Custom browser extensions, free internships for students, and paid mentorship to fast-track your dev career. Built by a developer who's been there.</p>
   <div class="hero-actions anim-4">
-    <a href="#extensions" class="btn btn-default btn-xl">
-      <i data-lucide="search" style="width:16px;height:16px;"></i>
-      Explore Extensions
+    <a href="#internship" class="btn btn-default btn-xl">
+      <i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>
+      Free Internship
     </a>
-    <a href="#hire" class="btn btn-outline btn-xl">
-      <i data-lucide="wrench" style="width:16px;height:16px;"></i>
-      Custom Extension?
+    <a href="#services" class="btn btn-outline btn-xl">
+      <i data-lucide="briefcase" style="width:16px;height:16px;"></i>
+      Paid Services
     </a>
   </div>
 </section>
@@ -1121,24 +554,22 @@
 <div class="stats-bar anim-5">
   <div class="stats-inner">
     <div class="stat">
-      <div class="num">120<span>+</span></div>
-      <div class="label">// extensions</div>
+      <div class="num">5<span>+</span></div>
+      <div class="label">// years experience</div>
     </div>
     <div class="stat">
-      <div class="num">12</div>
-      <div class="label">// categories</div>
+      <div class="num">2</div>
+      <div class="label">// month internship</div>
     </div>
     <div class="stat">
-      <div class="num">4.8<span>★</span></div>
-      <div class="label">// avg. rating</div>
+      <div class="num">24<span>h</span></div>
+      <div class="label">// response time</div>
     </div>
   </div>
 </div>
 
 <!-- INTERNSHIP BANNER -->
 <section class="section" id="internship" style="padding-bottom: 2rem;">
-
-  <!-- Top banner -->
   <div class="internship-banner">
     <div class="internship-left">
       <div class="internship-tag">
@@ -1148,11 +579,11 @@
       <h2 class="internship-title">Web Development<br/>Internship</h2>
       <p class="internship-desc">A hands-on program designed for students who want to go from learning to doing. Build real things, grow your online presence, and leave with proof of your skills.</p>
       <div class="internship-pills">
-        <span class="internship-pill"><i data-lucide="calendar" style="width:11px;height:11px;"></i> 3 months</span>
+        <span class="internship-pill"><i data-lucide="calendar" style="width:11px;height:11px;"></i> 2 months</span>
         <span class="internship-pill"><i data-lucide="wifi" style="width:11px;height:11px;"></i> Remote</span>
-        <span class="internship-pill"><i data-lucide="code-2" style="width:11px;height:11px;"></i> HTML5 · CSS3 · JS . Tailwindcss . ReactJs</span>
+        <span class="internship-pill"><i data-lucide="code-2" style="width:11px;height:11px;"></i> HTML5 · CSS3 · JS · TailwindCSS · ReactJs</span>
         <span class="internship-pill"><i data-lucide="award" style="width:11px;height:11px;"></i> Certificate</span>
-        <span class="internship-pill"><i data-lucide="users" style="width:11px;height:11px;"></i> Open to Students</span>
+        <span class="internship-pill"><i data-lucide="badge-check" style="width:11px;height:11px;"></i> FREE</span>
       </div>
       <div style="display:flex;gap:0.625rem;flex-wrap:wrap;">
         <a href="https://wa.me/923196977218?text=Hi%2C%20I%27m%20interested%20in%20the%20Web%20Development%20Internship." target="_blank" class="btn btn-default btn-lg" style="background:#fafafa;color:#09090b;border-color:#fafafa;">
@@ -1172,31 +603,19 @@
       <div class="internship-card-stack">
         <div class="icard">
           <div class="icard-icon" style="background:rgba(124,58,237,0.12);"><i data-lucide="linkedin" style="width:16px;height:16px;color:#a78bfa;"></i></div>
-          <div>
-            <div class="icard-title">LinkedIn Profile Guide</div>
-            <div class="icard-sub">Optimized for recruiters</div>
-          </div>
+          <div><div class="icard-title">LinkedIn Profile Guide</div><div class="icard-sub">Optimized for recruiters</div></div>
         </div>
         <div class="icard">
           <div class="icard-icon" style="background:rgba(22,163,74,0.12);"><i data-lucide="github" style="width:16px;height:16px;color:#4ade80;"></i></div>
-          <div>
-            <div class="icard-title">GitHub Portfolio</div>
-            <div class="icard-sub">Real commits, real projects</div>
-          </div>
+          <div><div class="icard-title">GitHub Portfolio</div><div class="icard-sub">Real commits, real projects</div></div>
         </div>
         <div class="icard">
           <div class="icard-icon" style="background:rgba(234,88,12,0.12);"><i data-lucide="file-text" style="width:16px;height:16px;color:#fb923c;"></i></div>
-          <div>
-            <div class="icard-title">Resume Building</div>
-            <div class="icard-sub">ATS-friendly template + review</div>
-          </div>
+          <div><div class="icard-title">Resume Building</div><div class="icard-sub">ATS-friendly template + review</div></div>
         </div>
         <div class="icard">
           <div class="icard-icon" style="background:rgba(37,99,235,0.12);"><i data-lucide="badge-check" style="width:16px;height:16px;color:#60a5fa;"></i></div>
-          <div>
-            <div class="icard-title">Verified Certificate</div>
-            <div class="icard-sub">Shareable on LinkedIn</div>
-          </div>
+          <div><div class="icard-title">Verified Certificate</div><div class="icard-sub">Shareable on LinkedIn</div></div>
         </div>
       </div>
     </div>
@@ -1204,16 +623,13 @@
 
   <!-- Benefits grid -->
   <div id="internship-benefits" class="my-4 intern-benefits-grid">
-
     <div class="ibenefit-card">
       <div class="ibenefit-header">
-        <div class="ibenefit-icon" style="background:#f5f3ff;">
-          <i data-lucide="linkedin" style="width:20px;height:20px;color:#7c3aed;"></i>
-        </div>
+        <div class="ibenefit-icon" style="background:#f5f3ff;"><i data-lucide="linkedin" style="width:20px;height:20px;color:#7c3aed;"></i></div>
         <span class="badge badge-purple">Career</span>
       </div>
       <div class="ibenefit-title">LinkedIn Profile Guide</div>
-      <div class="ibenefit-desc">We walk you through building a LinkedIn profile that actually gets noticed. Headline, about section, skills, and how to showcase your internship work to attract recruiters.</div>
+      <div class="ibenefit-desc">We walk you through building a LinkedIn profile that actually gets noticed. Headline, about section, skills, and how to showcase your internship work.</div>
       <ul class="ibenefit-list">
         <li><i data-lucide="check" style="width:12px;height:12px;color:#7c3aed;"></i> Optimized headline & summary</li>
         <li><i data-lucide="check" style="width:12px;height:12px;color:#7c3aed;"></i> Skills endorsement strategy</li>
@@ -1221,16 +637,13 @@
         <li><i data-lucide="check" style="width:12px;height:12px;color:#7c3aed;"></i> How to connect with recruiters</li>
       </ul>
     </div>
-
     <div class="ibenefit-card">
       <div class="ibenefit-header">
-        <div class="ibenefit-icon" style="background:#f0fdf4;">
-          <i data-lucide="github" style="width:20px;height:20px;color:#16a34a;"></i>
-        </div>
+        <div class="ibenefit-icon" style="background:#f0fdf4;"><i data-lucide="github" style="width:20px;height:20px;color:#16a34a;"></i></div>
         <span class="badge badge-success">Portfolio</span>
       </div>
       <div class="ibenefit-title">GitHub Portfolio Development</div>
-      <div class="ibenefit-desc">Your GitHub becomes your living resume. We help you set up a professional profile, structure your repos, write good READMEs, and show real commit history on live projects.</div>
+      <div class="ibenefit-desc">Your GitHub becomes your living resume. We help you set up a professional profile, structure your repos, write good READMEs, and show real commit history.</div>
       <ul class="ibenefit-list">
         <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Profile README setup</li>
         <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Clean repo structure guide</li>
@@ -1238,16 +651,13 @@
         <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Open source contribution intro</li>
       </ul>
     </div>
-
     <div class="ibenefit-card">
       <div class="ibenefit-header">
-        <div class="ibenefit-icon" style="background:#fff7ed;">
-          <i data-lucide="file-text" style="width:20px;height:20px;color:#ea580c;"></i>
-        </div>
+        <div class="ibenefit-icon" style="background:#fff7ed;"><i data-lucide="file-text" style="width:20px;height:20px;color:#ea580c;"></i></div>
         <span class="badge badge-warning">Resume</span>
       </div>
       <div class="ibenefit-title">Resume Building & Review</div>
-      <div class="ibenefit-desc">Get an ATS-friendly resume built from scratch. We review your content, fix formatting, and help you write bullet points that show impact — not just tasks you did.</div>
+      <div class="ibenefit-desc">Get an ATS-friendly resume built from scratch. We review your content, fix formatting, and help you write bullet points that show impact.</div>
       <ul class="ibenefit-list">
         <li><i data-lucide="check" style="width:12px;height:12px;color:#ea580c;"></i> ATS-friendly template</li>
         <li><i data-lucide="check" style="width:12px;height:12px;color:#ea580c;"></i> 1-on-1 resume review session</li>
@@ -1255,16 +665,13 @@
         <li><i data-lucide="check" style="width:12px;height:12px;color:#ea580c;"></i> Tech skills section guidance</li>
       </ul>
     </div>
-
     <div class="ibenefit-card">
       <div class="ibenefit-header">
-        <div class="ibenefit-icon" style="background:#eff6ff;">
-          <i data-lucide="layout-dashboard" style="width:20px;height:20px;color:#2563eb;"></i>
-        </div>
+        <div class="ibenefit-icon" style="background:#eff6ff;"><i data-lucide="layout-dashboard" style="width:20px;height:20px;color:#2563eb;"></i></div>
         <span class="badge badge-outline">Projects</span>
       </div>
       <div class="ibenefit-title">Real Project Experience</div>
-      <div class="ibenefit-desc">Work on browser extensions and web apps that are actually deployed. Not fake tutorial projects — things with real users, real feedback, and real problems to solve.</div>
+      <div class="ibenefit-desc">Work on browser extensions and web apps that are actually deployed. Not fake tutorial projects — things with real users and real problems to solve.</div>
       <ul class="ibenefit-list">
         <li><i data-lucide="check" style="width:12px;height:12px;color:#2563eb;"></i> Live deployed projects</li>
         <li><i data-lucide="check" style="width:12px;height:12px;color:#2563eb;"></i> HTML · CSS · JavaScript</li>
@@ -1272,16 +679,13 @@
         <li><i data-lucide="check" style="width:12px;height:12px;color:#2563eb;"></i> Code review & feedback</li>
       </ul>
     </div>
-
     <div class="ibenefit-card">
       <div class="ibenefit-header">
-        <div class="ibenefit-icon" style="background:#faf5ff;">
-          <i data-lucide="compass" style="width:20px;height:20px;color:#9333ea;"></i>
-        </div>
+        <div class="ibenefit-icon" style="background:#faf5ff;"><i data-lucide="compass" style="width:20px;height:20px;color:#9333ea;"></i></div>
         <span class="badge badge-purple">Guidance</span>
       </div>
       <div class="ibenefit-title">Proper Career Guidance</div>
-      <div class="ibenefit-desc">Beyond code — we guide you on how to navigate the job market as a fresh dev. What roles to target, how to prepare for interviews, and what skills actually matter right now.</div>
+      <div class="ibenefit-desc">Beyond code — we guide you on how to navigate the job market as a fresh dev. What roles to target, how to prepare for interviews.</div>
       <ul class="ibenefit-list">
         <li><i data-lucide="check" style="width:12px;height:12px;color:#9333ea;"></i> Job market orientation</li>
         <li><i data-lucide="check" style="width:12px;height:12px;color:#9333ea;"></i> Interview prep basics</li>
@@ -1289,12 +693,9 @@
         <li><i data-lucide="check" style="width:12px;height:12px;color:#9333ea;"></i> Roadmap for next 6 months</li>
       </ul>
     </div>
-
     <div class="ibenefit-card">
       <div class="ibenefit-header">
-        <div class="ibenefit-icon" style="background:#f0fdf4;">
-          <i data-lucide="badge-check" style="width:20px;height:20px;color:#16a34a;"></i>
-        </div>
+        <div class="ibenefit-icon" style="background:#f0fdf4;"><i data-lucide="badge-check" style="width:20px;height:20px;color:#16a34a;"></i></div>
         <span class="badge badge-success">Certificate</span>
       </div>
       <div class="ibenefit-title">Verified Completion Certificate</div>
@@ -1306,10 +707,8 @@
         <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Referral letter on request</li>
       </ul>
     </div>
-
   </div>
 
-  <!-- Bottom apply strip -->
   <div class="my-4 intern-apply-strip">
     <div>
       <div style="font-size:0.95rem;font-weight:600;color:#09090b;margin-bottom:0.25rem;">Ready to start your dev career the right way?</div>
@@ -1320,299 +719,411 @@
       Apply Now — Google Form
     </a>
   </div>
-
 </section>
 
 <hr class="section-divider" />
 
-<!-- EXTENSIONS SLIDER -->
-<section class="section" id="extensions">
+<!-- ══════════════════════════════════════════════
+     PAID SERVICES SECTION — NEW
+══════════════════════════════════════════════ -->
+<section class="services-section" id="services">
   <div class="section-header">
     <div>
-      <div class="section-eyebrow">// all extensions</div>
-      <h2>Browse Extensions</h2>
+      <div class="section-eyebrow">// paid services</div>
+      <h2>Get Expert Help — Directly</h2>
     </div>
-    <a href="#" class="view-all">
-      View all <i data-lucide="arrow-right" style="width:12px;height:12px;"></i>
-    </a>
+    <span class="badge badge-success" style="font-size:0.75rem;padding:0.3rem 0.75rem;">
+      <i data-lucide="zap" style="width:11px;height:11px;"></i>
+      EasyPaisa / JazzCash
+    </span>
   </div>
 
-  <div class="search-wrap">
-    <i data-lucide="search" class="search-icon" style="width:14px;height:14px;"></i>
-    <input type="text" class="input" placeholder="Search extensions..." id="search-input" oninput="filterCards()" />
-  </div>
+  <div class="services-grid">
 
-  <div class="categories" id="categories">
-    <button class="cat-btn active" onclick="setCategory('all',this)">
-      <i data-lucide="grid-3x3" style="width:12px;height:12px;"></i> All
-    </button>
-    <button class="cat-btn" onclick="setCategory('dev',this)">
-      <i data-lucide="code-2" style="width:12px;height:12px;"></i> Dev Tools
-    </button>
-    <button class="cat-btn" onclick="setCategory('productivity',this)">
-      <i data-lucide="zap" style="width:12px;height:12px;"></i> Productivity
-    </button>
-    <button class="cat-btn" onclick="setCategory('design',this)">
-      <i data-lucide="palette" style="width:12px;height:12px;"></i> Design
-    </button>
-    <button class="cat-btn" onclick="setCategory('security',this)">
-      <i data-lucide="shield" style="width:12px;height:12px;"></i> Security
-    </button>
-    <button class="cat-btn" onclick="setCategory('ai',this)">
-      <i data-lucide="sparkles" style="width:12px;height:12px;"></i> AI
-    </button>
-  </div>
-
-  <div class="slider-wrapper" id="slider-wrapper">
-    <div class="slider-track" id="slider-track">
-
-      <a href="#" class="ext-card" data-cat="dev" data-name="Extension Placeholder 1">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#f5f3ff;">🧩</div>
-          <span class="badge badge-success">Free</span>
+    <!-- Resume Review Card -->
+    <div class="service-card">
+      <div class="service-card-top">
+        <div class="service-icon" style="background:#fff7ed;">
+          <i data-lucide="file-text" style="width:20px;height:20px;color:#ea580c;"></i>
         </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">dev</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.8</div>
-          <span>1M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="dev" data-name="Extension Placeholder 2">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#fdf4ff;">{ }</div>
-          <span class="badge badge-success">Free</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">api</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.9</div>
-          <span>2M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="design" data-name="Extension Placeholder 3">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#f0fdf4;">🎨</div>
-          <span class="badge badge-success">Free</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">design</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.7</div>
-          <span>3M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="security" data-name="Extension Placeholder 4">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#fef2f2;">🛡️</div>
-          <span class="badge badge-success">Free</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">security</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 5.0</div>
-          <span>30M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="productivity" data-name="Extension Placeholder 5">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#eff6ff;">📰</div>
-          <span class="badge badge-success">Free</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">productivity</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.8</div>
-          <span>1M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="productivity" data-name="Extension Placeholder 6">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#fdf4ff;">📋</div>
-          <span class="badge badge-success">Free</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">notes</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.6</div>
-          <span>500K+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="security" data-name="Extension Placeholder 7">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#f5f3ff;">👻</div>
-          <span class="badge badge-success">Free</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">privacy</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.5</div>
-          <span>7M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="productivity" data-name="Extension Placeholder 8">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#f0fdf4;">✍️</div>
-          <span class="badge badge-warning">Freemium</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">writing</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.7</div>
-          <span>10M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="ai" data-name="Extension Placeholder 9">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#f0fdf4;">🤖</div>
-          <span class="badge badge-purple">New</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">ai</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.4</div>
-          <span>1M+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="dev" data-name="Extension Placeholder 10">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#eff6ff;">🔧</div>
-          <span class="badge badge-warning">Freemium</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">code</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.9</div>
-          <span>400K+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="design" data-name="Extension Placeholder 11">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#fffbeb;">🖌️</div>
-          <span class="badge badge-success">Free</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">css</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.6</div>
-          <span>200K+ users</span>
-        </div>
-      </a>
-
-      <a href="#" class="ext-card" data-cat="ai" data-name="Extension Placeholder 12">
-        <div class="ext-card-top">
-          <div class="ext-icon" style="background:#fdf4ff;">✨</div>
-          <span class="badge badge-purple">New</span>
-        </div>
-        <div class="ext-name">Extension Name</div>
-        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
-        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">ai</span></div>
-        <div class="ext-meta">
-          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.5</div>
-          <span>800K+ users</span>
-        </div>
-      </a>
-
+        <span class="badge badge-warning">Popular</span>
+      </div>
+      <div>
+        <div class="service-title">Resume Review</div>
+        <div class="service-desc">Get your resume reviewed by a 5+ year developer. ATS-friendly feedback, impact-driven bullet points, and tech skills guidance — ready in 24 hours.</div>
+      </div>
+      <div class="service-price-block">
+        <div class="service-price">500</div>
+        <div class="service-price-unit">PKR / session</div>
+      </div>
+      <ul class="service-list">
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Full resume audit & feedback</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> ATS keyword optimization</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Tech skills section review</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Written comments + suggestions</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Ready in 24 hours</li>
+      </ul>
+      <div class="service-btn-wrap">
+        <a href="https://wa.me/923196977218?text=Hi%2C%20I%20want%20a%20Resume%20Review%20session%20(500%20PKR)." target="_blank" class="btn btn-default btn-md" style="width:100%;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Book on WhatsApp
+        </a>
+      </div>
     </div>
+
+    <!-- 1-on-1 Mentorship Card (Featured) -->
+    <div class="service-card featured">
+      <div class="service-card-top">
+        <div class="service-icon" style="background:rgba(124,58,237,0.2);">
+          <i data-lucide="video" style="width:20px;height:20px;color:#a78bfa;"></i>
+        </div>
+        <span class="badge" style="background:rgba(124,58,237,0.2);color:#a78bfa;border-color:rgba(124,58,237,0.3);">⭐ Best Value</span>
+      </div>
+      <div>
+        <div class="service-title">1-on-1 Mentorship</div>
+        <div class="service-desc" style="color:#71717a;">Live session with a 5+ year developer. Ask anything — career advice, code review, project help, interview prep. Your call, your questions.</div>
+      </div>
+
+      <!-- Mentorship tiers -->
+      <div class="mentorship-tiers" style="gap:0.5rem;">
+        <div class="tier-row" style="background:#18181b;border-color:#27272a;">
+          <div class="tier-left">
+            <div class="tier-icon" style="background:rgba(124,58,237,0.15);">
+              <i data-lucide="clock" style="width:16px;height:16px;color:#a78bfa;"></i>
+            </div>
+            <div>
+              <div class="tier-name" style="color:#fafafa;">Quick Session</div>
+              <div class="tier-sub">30 minutes · 1 topic</div>
+            </div>
+          </div>
+          <div class="tier-price" style="color:#fafafa;">800 <span>PKR</span></div>
+        </div>
+        <div class="tier-row" style="background:#18181b;border-color:#7c3aed;">
+          <div class="tier-left">
+            <div class="tier-icon" style="background:rgba(124,58,237,0.15);">
+              <i data-lucide="star" style="width:16px;height:16px;color:#a78bfa;"></i>
+            </div>
+            <div>
+              <div class="tier-name" style="color:#fafafa;">Full Session</div>
+              <div class="tier-sub">1 hour · deep dive</div>
+            </div>
+          </div>
+          <div class="tier-price" style="color:#a78bfa;">1,500 <span>PKR</span></div>
+        </div>
+      </div>
+
+      <ul class="service-list">
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#4ade80;flex-shrink:0;"></i> Live video call (Google Meet)</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#4ade80;flex-shrink:0;"></i> Career roadmap discussion</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#4ade80;flex-shrink:0;"></i> Code review & feedback</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#4ade80;flex-shrink:0;"></i> Payment first, then booking</li>
+      </ul>
+      <div class="service-btn-wrap">
+        <a href="https://wa.me/923196977218?text=Hi%2C%20I%20want%20to%20book%20a%201-on-1%20Mentorship%20session." target="_blank" class="btn btn-lg" style="width:100%;justify-content:center;background:#7c3aed;color:white;border-color:#7c3aed;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Book Session
+        </a>
+      </div>
+    </div>
+
+    <!-- LinkedIn Profile Optimization Card -->
+    <div class="service-card">
+      <div class="service-card-top">
+        <div class="service-icon" style="background:#f5f3ff;">
+          <i data-lucide="linkedin" style="width:20px;height:20px;color:#7c3aed;"></i>
+        </div>
+        <span class="badge badge-purple">New</span>
+      </div>
+      <div>
+        <div class="service-title">LinkedIn Optimization</div>
+        <div class="service-desc">Full LinkedIn profile overhaul — headline, summary, skills, featured section, and connection strategy. Get recruiter attention within 7 days.</div>
+      </div>
+      <div class="service-price-block">
+        <div class="service-price">800</div>
+        <div class="service-price-unit">PKR / profile</div>
+      </div>
+      <ul class="service-list">
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Keyword-rich headline + summary</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Featured section setup</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Skills & endorsements guide</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Recruiter connection strategy</li>
+        <li><i data-lucide="check" style="width:13px;height:13px;color:#16a34a;flex-shrink:0;"></i> Delivered in 48 hours</li>
+      </ul>
+      <div class="service-btn-wrap">
+        <a href="https://wa.me/923196977218?text=Hi%2C%20I%20want%20LinkedIn%20Profile%20Optimization%20(800%20PKR)." target="_blank" class="btn btn-outline btn-md" style="width:100%;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#09090b"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Book on WhatsApp
+        </a>
+      </div>
+    </div>
+
   </div>
 
-  <div class="slider-controls">
-    <button class="slider-btn" onclick="slideBy(-1)">
-      <i data-lucide="chevron-left" style="width:15px;height:15px;"></i>
-    </button>
-    <div class="slider-dots" id="slider-dots"></div>
-    <button class="slider-btn" onclick="slideBy(1)">
-      <i data-lucide="chevron-right" style="width:15px;height:15px;"></i>
-    </button>
+  <!-- Payment methods strip -->
+  <div class="payment-strip" style="margin-top:1rem;">
+    <i data-lucide="shield-check" style="width:16px;height:16px;color:#16a34a;flex-shrink:0;"></i>
+    <span style="font-size:0.8rem;color:#15803d;font-weight:600;">Secure Payment Methods:</span>
+    <div class="payment-method"><i data-lucide="smartphone" style="width:12px;height:12px;"></i> EasyPaisa</div>
+    <div class="payment-method"><i data-lucide="smartphone" style="width:12px;height:12px;"></i> JazzCash</div>
+    <div class="payment-method"><i data-lucide="banknote" style="width:12px;height:12px;"></i> Bank Transfer</div>
+    <span style="font-size:0.75rem;color:#71717a;font-family:'Geist Mono',monospace;margin-left:auto;">Payment first · then session booked</span>
   </div>
 </section>
 
 <hr class="section-divider" />
 
-<!-- WHY PEOPLE USE -->
+<!-- ══════════════════════════════════════════════
+     HIRE OUR INTERNS SECTION — NEW
+══════════════════════════════════════════════ -->
+<section class="section" id="hire-interns" style="padding-bottom:2rem;">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">// for businesses & clients</div>
+      <h2>Have a Project? Hire Us.</h2>
+    </div>
+  </div>
+
+  <div class="hire-interns-banner">
+    <div>
+      <div class="hire-tag">
+        <i data-lucide="users" style="width:11px;height:11px;"></i>
+        Lead Dev + Trained Interns
+      </div>
+      <div class="hire-title">Real work. Real team. Real results.</div>
+      <div class="hire-desc">Need a website, web app, or browser extension built? Work with our lead developer (5+ years) backed by a trained intern team. You get professional output at a competitive rate — we get real client experience for our students.</div>
+      <div class="hire-pills">
+        <span class="hire-pill"><i data-lucide="globe" style="width:11px;height:11px;"></i> Websites</span>
+        <span class="hire-pill"><i data-lucide="puzzle" style="width:11px;height:11px;"></i> Browser Extensions</span>
+        <span class="hire-pill"><i data-lucide="layout-dashboard" style="width:11px;height:11px;"></i> Web Apps</span>
+        <span class="hire-pill"><i data-lucide="code-2" style="width:11px;height:11px;"></i> Landing Pages</span>
+        <span class="hire-pill"><i data-lucide="smartphone" style="width:11px;height:11px;"></i> Responsive UI</span>
+      </div>
+      <div style="display:flex;gap:0.625rem;flex-wrap:wrap;">
+        <a href="https://wa.me/923196977218?text=Hi%2C%20I%20have%20a%20project%20and%20want%20to%20hire%20your%20team." target="_blank" class="btn btn-default btn-lg">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Discuss Your Project
+        </a>
+        <a href="https://wa.me/923196977218" target="_blank" class="btn btn-outline btn-lg">
+          <i data-lucide="message-circle" style="width:14px;height:14px;"></i>
+          Get a Quote
+        </a>
+      </div>
+    </div>
+    <div class="hire-right">
+      <div class="hire-stat-card">
+        <div class="hire-stat-num">5<span>+</span></div>
+        <div class="hire-stat-label">// years experience</div>
+      </div>
+      <div class="hire-stat-card">
+        <div class="hire-stat-num">48<span>h</span></div>
+        <div class="hire-stat-label">// project start</div>
+      </div>
+      <div class="hire-stat-card" style="background:#f0fdf4;border-color:#bbf7d0;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:5px;">
+          <div style="width:7px;height:7px;border-radius:50%;background:#16a34a;animation:pulse 2s infinite;"></div>
+          <span style="font-size:0.78rem;font-weight:600;color:#16a34a;">Available Now</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- ── WHY SECTION ── -->
 <section class="why-section" id="why">
   <div class="section-header">
     <div>
       <div class="section-eyebrow">// the reason</div>
-      <h2>Why people use our extensions</h2>
+      <h2>Why work with us?</h2>
     </div>
   </div>
-
   <div class="why-grid">
-
     <div class="why-item">
-      <div class="why-icon-wrap">
-        <i data-lucide="zap" style="width:18px;height:18px;color:#09090b;"></i>
+      <div class="why-icon-wrap"><i data-lucide="zap" style="width:18px;height:18px;color:#09090b;"></i></div>
+      <div class="why-title">5+ Years Real Experience</div>
+      <div class="why-desc">Not a bootcamp grad. Actual production experience building browser extensions, web apps, and working with real clients.</div>
+      <div class="why-stat"><span class="dot-green"></span> verified developer</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon-wrap"><i data-lucide="users" style="width:18px;height:18px;color:#09090b;"></i></div>
+      <div class="why-title">Students Learn. You Save.</div>
+      <div class="why-desc">Our interns work on your project under senior supervision. You get quality output at better rates — they get real portfolio experience.</div>
+      <div class="why-stat"><span class="dot-green"></span> win-win model</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon-wrap"><i data-lucide="message-circle" style="width:18px;height:18px;color:#09090b;"></i></div>
+      <div class="why-title">WhatsApp First</div>
+      <div class="why-desc">No ticket systems, no delays. Direct WhatsApp communication means fast replies, quick revisions, and transparent progress.</div>
+      <div class="why-stat"><span class="dot-green"></span> avg. reply under 2 hours</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon-wrap"><i data-lucide="shield-check" style="width:18px;height:18px;color:#09090b;"></i></div>
+      <div class="why-title">Payment First. Always.</div>
+      <div class="why-desc">Transparent pricing, no surprises. Pay via EasyPaisa or JazzCash before the session or project starts — no hidden fees.</div>
+      <div class="why-stat"><span class="dot-green"></span> EasyPaisa · JazzCash</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon-wrap"><i data-lucide="graduation-cap" style="width:18px;height:18px;color:#09090b;"></i></div>
+      <div class="why-title">Free Internship for Students</div>
+      <div class="why-desc">If you're a student, the internship is 100% free. No catch. We invest in you because great developers come from good mentorship.</div>
+      <div class="why-stat"><span class="dot-green"></span> open to all beginners</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon-wrap"><i data-lucide="star" style="width:18px;height:18px;color:#09090b;"></i></div>
+      <div class="why-title">Full Source Code Delivered</div>
+      <div class="why-desc">When we build something for you, you own it completely. Full source code, no lock-in, documented and ready to maintain.</div>
+      <div class="why-stat"><span class="dot-green"></span> 100% ownership</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<hr class="section-divider" />
+
+<!-- ══════════════════════════════════════════════
+     PORTFOLIO / MY WORK SECTION — NEW
+══════════════════════════════════════════════ -->
+<section class="portfolio-section" id="portfolio">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">// my work</div>
+      <h2>Projects I've Built</h2>
+    </div>
+    <span class="badge badge-success" style="font-size:0.75rem;padding:0.3rem 0.75rem;">
+      <i data-lucide="code-2" style="width:11px;height:11px;"></i>
+      5+ Years · Real Projects
+    </span>
+  </div>
+
+  <div class="portfolio-grid">
+
+    <!-- Project 1 -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-img" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);">
+        🧩
       </div>
-      <div class="why-title">Save hours every week</div>
-      <div class="why-desc">Stop doing repetitive tasks manually. Our extensions automate the boring stuff so you can focus on what actually matters.</div>
-      <div class="why-stat"><span class="dot-green"></span> avg. 3.5 hrs saved per week</div>
+      <div class="portfolio-card-body">
+        <div class="portfolio-card-title">ExtEngineer Hub</div>
+        <div class="portfolio-card-desc">This website — a full browser extension directory with internship program, paid services, and custom extension development landing page.</div>
+        <div class="portfolio-card-tags">
+          <span class="portfolio-tag">HTML5</span>
+          <span class="portfolio-tag">CSS3</span>
+          <span class="portfolio-tag">JavaScript</span>
+          <span class="portfolio-tag">TailwindCSS</span>
+        </div>
+        <div class="portfolio-card-footer">
+          <div class="portfolio-status">
+            <div class="portfolio-dot"></div>
+            Live
+          </div>
+          <span>Personal Project</span>
+        </div>
+      </div>
     </div>
 
-    <div class="why-item">
-      <div class="why-icon-wrap">
-        <i data-lucide="shield-check" style="width:18px;height:18px;color:#09090b;"></i>
+    <!-- Project 2 -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-img" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
+        🛡️
       </div>
-      <div class="why-title">Browse without fear</div>
-      <div class="why-desc">Block ads, trackers, and malware before they load. Your data stays yours — no logging, no selling, no compromises.</div>
-      <div class="why-stat"><span class="dot-green"></span> 100% privacy-first picks</div>
+      <div class="portfolio-card-body">
+        <div class="portfolio-card-title">Privacy Guard Extension</div>
+        <div class="portfolio-card-desc">A Chrome extension that blocks trackers, removes ads, and warns users about suspicious websites in real-time.</div>
+        <div class="portfolio-card-tags">
+          <span class="portfolio-tag">Chrome API</span>
+          <span class="portfolio-tag">Manifest V3</span>
+          <span class="portfolio-tag">JavaScript</span>
+        </div>
+        <div class="portfolio-card-footer">
+          <div class="portfolio-status">
+            <div class="portfolio-dot"></div>
+            Live
+          </div>
+          <span>Chrome Web Store</span>
+        </div>
+      </div>
     </div>
 
-    <div class="why-item">
-      <div class="why-icon-wrap">
-        <i data-lucide="code-2" style="width:18px;height:18px;color:#09090b;"></i>
+    <!-- Project 3 -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-img" style="background:linear-gradient(135deg,#fff7ed,#ffedd5);">
+        🎨
       </div>
-      <div class="why-title">Ship faster as a dev</div>
-      <div class="why-desc">Inspect stacks, debug APIs, and navigate codebases without leaving your browser. Tools built by devs, for devs.</div>
-      <div class="why-stat"><span class="dot-green"></span> used by 2M+ developers</div>
+      <div class="portfolio-card-body">
+        <div class="portfolio-card-title">Color Picker Pro</div>
+        <div class="portfolio-card-desc">Browser extension for designers — pick any color from any webpage, copy HEX/RGB/HSL values instantly with palette history.</div>
+        <div class="portfolio-card-tags">
+          <span class="portfolio-tag">Chrome API</span>
+          <span class="portfolio-tag">Canvas API</span>
+          <span class="portfolio-tag">CSS</span>
+        </div>
+        <div class="portfolio-card-footer">
+          <div class="portfolio-status">
+            <div class="portfolio-dot"></div>
+            Live
+          </div>
+          <span>500+ Users</span>
+        </div>
+      </div>
     </div>
 
-    <div class="why-item">
-      <div class="why-icon-wrap">
-        <i data-lucide="palette" style="width:18px;height:18px;color:#09090b;"></i>
+    <!-- Project 4 -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-img" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">
+        📋
       </div>
-      <div class="why-title">Design right in the browser</div>
-      <div class="why-desc">Pick colors, inspect fonts, measure spacing — all without switching tools. Your browser becomes a design playground.</div>
-      <div class="why-stat"><span class="dot-green"></span> loved by 500K+ designers</div>
+      <div class="portfolio-card-body">
+        <div class="portfolio-card-title">Smart Clipboard Manager</div>
+        <div class="portfolio-card-desc">Save, organize, and search clipboard history across tabs. Built for devs and writers who copy-paste constantly.</div>
+        <div class="portfolio-card-tags">
+          <span class="portfolio-tag">Chrome Storage API</span>
+          <span class="portfolio-tag">React</span>
+          <span class="portfolio-tag">TailwindCSS</span>
+        </div>
+        <div class="portfolio-card-footer">
+          <div class="portfolio-status">
+            <div class="portfolio-dot"></div>
+            Live
+          </div>
+          <span>Client Project</span>
+        </div>
+      </div>
     </div>
 
-    <div class="why-item">
-      <div class="why-icon-wrap">
-        <i data-lucide="sparkles" style="width:18px;height:18px;color:#09090b;"></i>
+    <!-- Project 5 -->
+    <div class="portfolio-card">
+      <div class="portfolio-card-img" style="background:linear-gradient(135deg,#faf5ff,#f3e8ff);">
+        🤖
       </div>
-      <div class="why-title">AI that actually helps</div>
-      <div class="why-desc">Summarize pages, rewrite text, and get answers without opening a new tab. AI baked right into your workflow.</div>
-      <div class="why-stat"><span class="dot-green"></span> 10M+ AI-assisted actions/day</div>
+      <div class="portfolio-card-body">
+        <div class="portfolio-card-title">AI Page Summarizer</div>
+        <div class="portfolio-card-desc">One-click AI summary of any webpage. Highlights key points, extracts action items, and exports to notes — no tab switching.</div>
+        <div class="portfolio-card-tags">
+          <span class="portfolio-tag">OpenAI API</span>
+          <span class="portfolio-tag">Chrome Extension</span>
+          <span class="portfolio-tag">ReactJs</span>
+        </div>
+        <div class="portfolio-card-footer">
+          <div class="portfolio-status">
+            <div class="portfolio-dot"></div>
+            Live
+          </div>
+          <span>1K+ Users</span>
+        </div>
+      </div>
     </div>
 
-    <div class="why-item">
-      <div class="why-icon-wrap">
-        <i data-lucide="star" style="width:18px;height:18px;color:#09090b;"></i>
-      </div>
-      <div class="why-title">Handpicked, not random</div>
-      <div class="why-desc">Every extension here is tested and curated. No bloatware, no sketchy permissions. Only tools we'd use ourselves.</div>
-      <div class="why-stat"><span class="dot-green"></span> 4.8★ avg across all picks</div>
+    <!-- Project 6 — CTA card -->
+    <div class="portfolio-card" style="background:var(--bg-subtle);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;gap:1rem;min-height:280px;">
+      <div style="font-size:2.5rem;">🚀</div>
+      <div style="font-size:0.95rem;font-weight:700;color:var(--text);">Your Project Here</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);line-height:1.65;max-width:200px;">Need something custom built? Let's talk about your idea.</div>
+      <a href="https://wa.me/923196977218?text=Hi%2C%20I%20have%20a%20project%20idea." target="_blank" class="btn btn-default btn-sm" style="margin-top:0.5rem;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Discuss Idea
+      </a>
     </div>
 
   </div>
@@ -1620,31 +1131,82 @@
 
 <hr class="section-divider" />
 
-<!-- HOOK — Don't Think Just Try -->
-<section class="hook-section">
-  <div class="hook-card">
-    <div class="hook-kicker">// no more excuses</div>
-    <div class="hook-headline">
-      <span class="strike">Think.</span> Just Try.
+<!-- ══════════════════════════════════════════════
+     FAQ SECTION — NEW
+══════════════════════════════════════════════ -->
+<section class="faq-section" id="faq">
+  <div class="section-header" style="max-width:100%;">
+    <div>
+      <div class="section-eyebrow">// common questions</div>
+      <h2>Frequently Asked Questions</h2>
     </div>
-    <p class="hook-sub">The best extension is the one you actually install. Stop reading, stop comparing — pick one and see the difference in your next tab.</p>
-    <div class="hook-cta-row">
-      <a href="#extensions" class="btn btn-default btn-xl">
-        <i data-lucide="arrow-down" style="width:16px;height:16px;"></i>
-        Browse Extensions
-      </a>
-      <a href="#hire" class="btn btn-outline btn-xl">
-        <i data-lucide="wrench" style="width:16px;height:16px;"></i>
-        Build a Custom One
-      </a>
-    </div>
-    <div class="hook-note">free to browse · no account needed · takes 30 seconds</div>
   </div>
+
+  <div class="faq-item open">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Internship bilkul free hai? Koi hidden charges toh nahi?
+      <div class="faq-icon"><i data-lucide="plus" style="width:12px;height:12px;"></i></div>
+    </button>
+    <div class="faq-answer">
+      Haan, 100% free hai. Koi registration fee, course fee, ya hidden charge nahi. Pehla batch free hai taake hum apna teaching system strong karein aur students ke real results showcase kar sakein. Baad mein paid cohorts aayenge.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Resume Review ya Mentorship session book kaise karta hun?
+      <div class="faq-icon"><i data-lucide="plus" style="width:12px;height:12px;"></i></div>
+    </button>
+    <div class="faq-answer">
+      Bohot simple hai — WhatsApp pe message karo, service batao, payment karo (EasyPaisa/JazzCash), aur session confirm hoga. Payment pehle, session baad mein — yahi hamara process hai. Koi complicated booking system nahi.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Mentorship session mein kya cover hoga?
+      <div class="faq-icon"><i data-lucide="plus" style="width:12px;height:12px;"></i></div>
+    </button>
+    <div class="faq-answer">
+      Aap decide karte ho — career roadmap, code review, project help, interview prep, freelancing tips, ya koi bhi tech problem. 30 min (800 PKR) mein ek topic deeply cover hoga. 1 hour (1500 PKR) mein multiple topics ya deep dive possible hai.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Custom browser extension banwane mein kitna time lagta hai?
+      <div class="faq-icon"><i data-lucide="plus" style="width:12px;height:12px;"></i></div>
+    </button>
+    <div class="faq-answer">
+      Simple extensions (basic functionality) 3–5 din mein ready hote hain. Complex extensions (AI integration, backend, multiple features) 1–3 weeks le sakti hain. Pehle requirements discuss karte hain, phir timeline aur price confirm hoti hai.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Internship ke liye kya requirements hain? Koi experience chahiye?
+      <div class="faq-icon"><i data-lucide="plus" style="width:12px;height:12px;"></i></div>
+    </button>
+    <div class="faq-answer">
+      Koi experience nahi chahiye. Sirf ek cheez chahiye — seekhne ki lagan aur consistency. Agar aap HTML/CSS ki basics bhi nahi jaante, koi baat nahi. Hum zero se shuru karte hain. Bas committed rehna padega 3 mahine.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Payment ke baad session confirm nahi hua toh?
+      <div class="faq-icon"><i data-lucide="plus" style="width:12px;height:12px;"></i></div>
+    </button>
+    <div class="faq-answer">
+      Payment ke baad directly WhatsApp pe confirm message aata hai. Agar koi issue ho toh WhatsApp pe message karo — 2 hours mein response guarantee hai. Refund bhi possible hai agar session nahi hua.
+    </div>
+  </div>
+
 </section>
 
 <hr class="section-divider" />
 
-<!-- CTA -->
+<!-- CTA — Custom Extension -->
 <div class="cta-section" id="hire">
   <div class="cta-card">
     <div class="cta-left">
@@ -1655,22 +1217,10 @@
       <h2>Need a <span>custom browser</span><br/>extension built?</h2>
       <p>We build tailor-made Chrome, Firefox & Edge extensions for businesses and developers. From concept to Chrome Web Store — we handle it all.</p>
       <div class="cta-features">
-        <div class="cta-feat">
-          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
-          Chrome & Firefox
-        </div>
-        <div class="cta-feat">
-          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
-          Fast delivery
-        </div>
-        <div class="cta-feat">
-          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
-          Full source code
-        </div>
-        <div class="cta-feat">
-          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
-          Post-launch support
-        </div>
+        <div class="cta-feat"><i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i> Chrome & Firefox</div>
+        <div class="cta-feat"><i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i> Fast delivery</div>
+        <div class="cta-feat"><i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i> Full source code</div>
+        <div class="cta-feat"><i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i> Post-launch support</div>
       </div>
       <div class="cta-buttons">
         <a href="https://wa.me/923196977218?text=Hi%2C%20I%20need%20a%20custom%20browser%20extension%20built." target="_blank" class="btn btn-whatsapp btn-xl">
@@ -1706,118 +1256,59 @@
       ExtEngineer
     </a>
     <div class="footer-links">
-      <a href="#extensions">Extensions</a>
-      <a href="#top-picks">Top Picks</a>
+      <a href="#internship">Internship</a>
+      <a href="#services">Services</a>
+      <a href="#mentorship">Mentorship</a>
       <a href="#hire">Hire Us</a>
-      <a href="#">Contact</a>
     </div>
     <div class="footer-copy">© 2026 ExtEngineer</div>
   </div>
 </footer>
 
+<!--
+==============================================
+  EXTENSIONS SECTION — COMMENTED OUT
+  (Add real extension data before enabling)
+  Uncomment when you have actual extensions
+  to list with real names, links & descriptions.
+==============================================
+
+<hr class="section-divider" />
+<section class="section" id="extensions">
+  ... slider with real extension cards goes here ...
+  ... add real data: name, description, link, rating, users ...
+</section>
+-->
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
-    initSlider();
+    // Load saved dark mode preference
+    if (localStorage.getItem('dark') === '1') {
+      document.body.classList.add('dark');
+      document.getElementById('toggle-icon').setAttribute('data-lucide', 'sun');
+      lucide.createIcons();
+    }
   });
 
-  let activeCategory = 'all';
-
-  function setCategory(cat, btn) {
-    activeCategory = cat;
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    filterCards();
+  // ── Dark Mode Toggle ──
+  function toggleDark() {
+    const isDark = document.body.classList.toggle('dark');
+    const icon = document.getElementById('toggle-icon');
+    icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+    lucide.createIcons();
+    localStorage.setItem('dark', isDark ? '1' : '0');
   }
 
-  function filterCards() {
-    const q = document.getElementById('search-input').value.toLowerCase();
-    const cards = document.querySelectorAll('#slider-track .ext-card');
-    cards.forEach(card => {
-      const name = card.dataset.name.toLowerCase();
-      const cat = card.dataset.cat;
-      const matchCat = activeCategory === 'all' || cat === activeCategory;
-      const matchSearch = name.includes(q);
-      card.style.display = (matchCat && matchSearch) ? 'block' : 'none';
-    });
-    resetSlider();
-  }
-
-  let currentSlide = 0;
-  let visibleCount = 3;
-  let totalSlides = 0;
-
-  function initSlider() {
-    updateVisibleCount();
-    buildDots();
-    updateSlider();
-    window.addEventListener('resize', () => {
-      updateVisibleCount();
-      buildDots();
-      if (currentSlide >= totalSlides) currentSlide = Math.max(0, totalSlides - 1);
-      updateSlider();
-    });
-    const track = document.getElementById('slider-track');
-    let startX = 0;
-    track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-    track.addEventListener('touchend', e => {
-      const diff = startX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 50) slideBy(diff > 0 ? 1 : -1);
-    }, { passive: true });
-  }
-
-  function updateVisibleCount() {
-    const w = window.innerWidth;
-    visibleCount = w < 640 ? 1 : w < 1024 ? 2 : 3;
-    const cards = getVisibleCards();
-    totalSlides = Math.max(0, cards.length - visibleCount);
-  }
-
-  function getVisibleCards() {
-    return Array.from(document.querySelectorAll('#slider-track .ext-card')).filter(c => c.style.display !== 'none');
-  }
-
-  function buildDots() {
-    const dotsEl = document.getElementById('slider-dots');
-    dotsEl.innerHTML = '';
-    const cards = getVisibleCards();
-    totalSlides = Math.max(0, cards.length - visibleCount);
-    for (let i = 0; i <= totalSlides; i++) {
-      const d = document.createElement('div');
-      d.className = 'dot-indicator' + (i === currentSlide ? ' active' : '');
-      d.onclick = () => goToSlide(i);
-      dotsEl.appendChild(d);
-    }
-  }
-
-  function updateSlider() {
-    const cards = getVisibleCards();
-    if (cards.length === 0) return;
-    const cardWidth = cards[0].offsetWidth + 16;
-    const offset = -currentSlide * cardWidth;
-    document.getElementById('slider-track').style.transform = `translateX(${offset}px)`;
-    document.querySelectorAll('.dot-indicator').forEach((d, i) => {
-      d.classList.toggle('active', i === currentSlide);
-    });
-  }
-
-  function slideBy(dir) {
-    const cards = getVisibleCards();
-    totalSlides = Math.max(0, cards.length - visibleCount);
-    currentSlide = Math.max(0, Math.min(currentSlide + dir, totalSlides));
-    updateSlider();
-  }
-
-  function goToSlide(i) {
-    currentSlide = i;
-    updateSlider();
-  }
-
-  function resetSlider() {
-    currentSlide = 0;
-    updateVisibleCount();
-    buildDots();
-    updateSlider();
+  // ── FAQ Accordion ──
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    // Open clicked if it was closed
+    if (!isOpen) item.classList.add('open');
+    lucide.createIcons();
   }
 </script>
 

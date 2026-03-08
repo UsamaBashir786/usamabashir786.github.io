@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ext Engineer — Browser Extensions Hub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Geist', 'sans-serif'],
+            mono: ['Geist Mono', 'monospace'],
+          },
+          colors: {
+            zinc: {
+              50:  '#fafafa',
+              100: '#f4f4f5',
+              200: '#e4e4e7',
+              300: '#d4d4d8',
+              400: '#a1a1aa',
+              500: '#71717a',
+              600: '#52525b',
+              700: '#3f3f46',
+              800: '#27272a',
+              900: '#18181b',
+              950: '#09090b',
+            }
+          }
+        },
+      },
+    };
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #fafafa;
+      color: #09090b;
+      font-family: 'Geist', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Subtle dot grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, #d4d4d8 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #fafafa; }
+    ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 99px; }
+
+    /* shadcn-style card */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+    }
+    .card-hover {
+      transition: all 0.2s ease;
+    }
+    .card-hover:hover {
+      border-color: #a1a1aa;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
+    /* shadcn badge variants */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 0.15rem 0.6rem; border-radius: 99px; font-family: 'Geist Mono', monospace; font-size: 0.72rem; font-weight: 500; border: 1px solid; }
+    .badge-default { background: #09090b; color: #fafafa; border-color: #09090b; }
+    .badge-secondary { background: #f4f4f5; color: #3f3f46; border-color: #e4e4e7; }
+    .badge-outline { background: transparent; color: #3f3f46; border-color: #e4e4e7; }
+    .badge-success { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+    .badge-warning { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+    .badge-purple { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
+
+    /* shadcn button variants */
+    .btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'Geist', sans-serif; font-weight: 500; font-size: 0.875rem; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; border: 1px solid transparent; text-decoration: none; white-space: nowrap; }
+    .btn-sm { height: 32px; padding: 0 0.75rem; font-size: 0.8rem; }
+    .btn-md { height: 40px; padding: 0 1rem; }
+    .btn-lg { height: 44px; padding: 0 1.25rem; font-size: 0.95rem; }
+    .btn-xl { height: 52px; padding: 0 1.5rem; font-size: 1rem; font-weight: 600; }
+
+    .btn-default { background: #09090b; color: #fafafa; border-color: #09090b; }
+    .btn-default:hover { background: #27272a; }
+
+    .btn-secondary { background: #f4f4f5; color: #09090b; border-color: #e4e4e7; }
+    .btn-secondary:hover { background: #e4e4e7; }
+
+    .btn-outline { background: #ffffff; color: #09090b; border-color: #e4e4e7; }
+    .btn-outline:hover { background: #f4f4f5; border-color: #d4d4d8; }
+
+    .btn-ghost { background: transparent; color: #3f3f46; border-color: transparent; }
+    .btn-ghost:hover { background: #f4f4f5; color: #09090b; }
+
+    .btn-accent { background: #7c3aed; color: white; border-color: #7c3aed; }
+    .btn-accent:hover { background: #6d28d9; }
+
+    .btn-whatsapp { background: #16a34a; color: white; border-color: #16a34a; }
+    .btn-whatsapp:hover { background: #15803d; }
+
+    /* shadcn input */
+    .input {
+      height: 40px;
+      width: 100%;
+      padding: 0 0.75rem;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #09090b;
+      font-family: 'Geist', sans-serif;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input::placeholder { color: #a1a1aa; }
+    .input:focus { border-color: #a1a1aa; box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,250,250,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e4e4e7;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo {
+      font-family: 'Geist', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.03em;
+      display: flex; align-items: center; gap: 8px;
+      color: #09090b;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: #09090b;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-links { display: flex; align-items: center; gap: 0.125rem; }
+    .nav-link {
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #52525b;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .nav-link:hover { background: #f4f4f5; color: #09090b; }
+
+    /* separator */
+    .sep { width: 1px; height: 20px; background: #e4e4e7; }
+
+    /* Hero */
+    .hero {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 5rem 1.5rem 4rem;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.3rem 0.8rem;
+      border-radius: 99px;
+      border: 1px solid #e4e4e7;
+      background: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #52525b;
+      font-family: 'Geist Mono', monospace;
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; animation: pulse 2s infinite; }
+    .hero h1 {
+      font-weight: 800;
+      font-size: clamp(2.75rem, 6vw, 4.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+      color: #09090b;
+    }
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, #7c3aed, #db2777);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: #71717a;
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+    .hero-actions {
+      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Stats */
+    .stats-bar {
+      position: relative; z-index: 1;
+      max-width: 780px; margin: 0 auto 4rem;
+      padding: 0 1.5rem;
+    }
+    .stats-inner {
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .stat {
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .stat + .stat::before {
+      content: '';
+      position: absolute; left: 0; top: 20%; height: 60%;
+      width: 1px; background: #e4e4e7;
+    }
+    .stat .num {
+      font-size: 1.875rem;
+      font-weight: 800;
+      color: #09090b;
+      letter-spacing: -0.03em;
+    }
+    .stat .num span { color: #7c3aed; }
+    .stat .label { font-size: 0.78rem; color: #71717a; margin-top: 0.2rem; font-family: 'Geist Mono', monospace; }
+
+    /* Section */
+    .section {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+    .section-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .section-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #7c3aed;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.25rem;
+    }
+    .section-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #09090b;
+    }
+    .view-all {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #71717a;
+      text-decoration: none;
+      font-family: 'Geist Mono', monospace;
+      display: flex; align-items: center; gap: 4px;
+      transition: color 0.15s;
+    }
+    .view-all:hover { color: #09090b; }
+
+    /* Separator line */
+    .section-divider {
+      border: none;
+      border-top: 1px solid #e4e4e7;
+      margin: 0 1.5rem 4rem;
+      max-width: 1200px;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* Slider */
+    .slider-wrapper { position: relative; overflow: hidden; margin: 0 -0.25rem; }
+    .slider-track {
+      display: flex;
+      gap: 1rem;
+      padding: 0.25rem 0.25rem 1rem;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+    .ext-card {
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      flex: 0 0 calc(33.333% - 0.67rem);
+      min-width: 260px;
+    }
+    .ext-card:hover {
+      border-color: #a1a1aa;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .ext-card-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 0.875rem;
+    }
+    .ext-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.375rem;
+      flex-shrink: 0;
+      border: 1px solid #e4e4e7;
+    }
+    .ext-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #09090b;
+    }
+    .ext-desc {
+      font-size: 0.825rem;
+      color: #71717a;
+      line-height: 1.6;
+      margin-bottom: 0.875rem;
+    }
+    .ext-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      color: #a1a1aa;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f4f4f5;
+    }
+    .ext-rating { display: flex; align-items: center; gap: 3px; color: #d97706; }
+    .ext-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .ext-tag {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      background: #f4f4f5;
+      color: #71717a;
+      border: 1px solid #e4e4e7;
+    }
+
+    /* Slider controls */
+    .slider-controls {
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .slider-btn {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: 1px solid #e4e4e7;
+      background: #ffffff;
+      color: #71717a;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .slider-btn:hover { border-color: #a1a1aa; background: #f4f4f5; color: #09090b; }
+    .slider-dots { display: flex; gap: 5px; }
+    .dot-indicator {
+      width: 6px; height: 6px;
+      border-radius: 99px;
+      background: #d4d4d8;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .dot-indicator.active { width: 18px; background: #09090b; }
+
+    /* Category tabs — shadcn style */
+    .categories {
+      display: flex; gap: 0.375rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .cat-btn {
+      height: 32px; padding: 0 0.875rem;
+      border-radius: 6px;
+      border: 1px solid #e4e4e7;
+      background: #ffffff;
+      color: #71717a;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Geist', sans-serif;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .cat-btn:hover { background: #f4f4f5; color: #09090b; border-color: #d4d4d8; }
+    .cat-btn.active { background: #09090b; color: #fafafa; border-color: #09090b; }
+
+    /* Search */
+    .search-wrap {
+      max-width: 420px;
+      margin: 0 auto 1.5rem;
+      position: relative;
+    }
+    .search-wrap .input { height: 40px; padding-left: 2.5rem; }
+    .search-wrap .search-icon {
+      position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
+      color: #a1a1aa; pointer-events: none;
+    }
+
+    /* Top Picks */
+    .top-picks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .pick-card {
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .pick-card:hover { border-color: #a1a1aa; box-shadow: 0 4px 16px rgba(0,0,0,0.07); transform: translateY(-1px); }
+    .pick-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.75rem;
+      flex-shrink: 0;
+      border: 1px solid #e4e4e7;
+    }
+    .pick-info { flex: 1; min-width: 0; }
+    .pick-name { font-size: 0.9rem; font-weight: 600; color: #09090b; margin-bottom: 0.2rem; }
+    .pick-desc { font-size: 0.78rem; color: #71717a; line-height: 1.5; }
+    .pick-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+    .pick-star { display: flex; align-items: center; gap: 3px; color: #d97706; font-family: 'Geist Mono', monospace; font-size: 0.75rem; }
+
+    /* Hero pick card */
+    .pick-hero {
+      grid-column: span 2;
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 16px;
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .pick-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(124,58,237,0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .pick-hero-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #7c3aed;
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      margin-bottom: 0.75rem;
+    }
+    .pick-hero h3 {
+      font-size: 1.625rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      color: #09090b;
+    }
+    .pick-hero p { color: #71717a; line-height: 1.7; font-size: 0.9rem; margin-bottom: 1rem; max-width: 480px; }
+    .pick-hero-img {
+      width: 100px; height: 100px;
+      background: #f4f4f5;
+      border-radius: 20px;
+      border: 1px solid #e4e4e7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    /* CTA */
+    .cta-section {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto 4rem;
+      padding: 0 1.5rem;
+    }
+    .cta-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 3rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, #7c3aed, #db2777, transparent);
+    }
+    .cta-card::after {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 250px; height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%);
+    }
+    .cta-left { position: relative; z-index: 1; }
+    .cta-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #a78bfa;
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .cta-card h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+      color: #fafafa;
+    }
+    .cta-card h2 span {
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .cta-card p { color: #71717a; font-size: 0.9rem; line-height: 1.7; max-width: 440px; margin-bottom: 2rem; }
+    .cta-features { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+    .cta-feat {
+      display: flex; align-items: center; gap: 5px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      color: #71717a;
+    }
+    .cta-feat svg { color: #16a34a; }
+    .cta-buttons { display: flex; gap: 0.625rem; flex-wrap: wrap; }
+    .cta-right {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+    }
+    .cta-phone-badge {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      min-width: 170px;
+    }
+    .cta-phone-badge .phone-label { font-family: 'Geist Mono', monospace; font-size: 0.68rem; color: #71717a; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cta-phone-badge .phone-num { font-family: 'Geist', sans-serif; font-size: 1rem; font-weight: 600; color: #4ade80; }
+    .cta-status {
+      display: flex; align-items: center; gap: 5px;
+      font-family: 'Geist Mono', monospace; font-size: 0.72rem; color: #52525b;
+    }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+
+    /* Phone mockup */
+    .phone-float {
+      position: fixed;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 50;
+      pointer-events: none;
+      animation: phoneFloat 6s ease-in-out infinite;
+    }
+    @keyframes phoneFloat {
+      0%, 100% { transform: translateY(-50%) translateY(0px) rotate(3deg); }
+      50%       { transform: translateY(-50%) translateY(-14px) rotate(3deg); }
+    }
+    .phone-body {
+      width: 140px; height: 285px;
+      background: #ffffff;
+      border-radius: 28px;
+      border: 1.5px solid #e4e4e7;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .phone-notch {
+      width: 48px; height: 14px;
+      background: #09090b;
+      border-radius: 0 0 10px 10px;
+      margin: 0 auto;
+      flex-shrink: 0;
+      position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      gap: 4px;
+    }
+    .phone-notch::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #27272a; }
+    .phone-notch::after { content: ''; width: 16px; height: 3px; border-radius: 2px; background: #27272a; }
+    .phone-screen {
+      flex: 1; padding: 6px 7px 8px;
+      display: flex; flex-direction: column; gap: 4px;
+      overflow: hidden;
+      background: #fafafa;
+    }
+    .phone-status {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 2px;
+    }
+    .phone-status span { font-family: 'Geist Mono', monospace; font-size: 6.5px; color: #71717a; }
+    .phone-ext-popup {
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 6px 7px;
+      display: flex; align-items: center; gap: 5px;
+      animation: popupSlide 0.5s ease both;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .phone-ext-popup.delay1 { animation-delay: 0.1s; }
+    .phone-ext-popup.delay2 { animation-delay: 0.2s; }
+    .phone-ext-popup.delay3 { animation-delay: 0.3s; }
+    @keyframes popupSlide {
+      from { opacity: 0; transform: translateX(10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .popup-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .popup-info { flex: 1; min-width: 0; }
+    .popup-name { font-family: 'Geist', sans-serif; font-size: 7px; font-weight: 600; color: #09090b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .popup-sub { font-family: 'Geist Mono', monospace; font-size: 5.5px; color: #a1a1aa; margin-top: 1px; }
+    .popup-dot { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; flex-shrink: 0; animation: pulse 2s infinite; }
+    .phone-scan-bar {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #7c3aed, transparent);
+      animation: scanBar 2.5s ease-in-out infinite;
+      margin: 1px 0; opacity: 0.5;
+    }
+    @keyframes scanBar {
+      0%   { transform: translateY(0); opacity: 0; }
+      20%  { opacity: 0.7; }
+      80%  { opacity: 0.7; }
+      100% { transform: translateY(160px); opacity: 0; }
+    }
+    .phone-home { width: 36px; height: 3px; background: #d4d4d8; border-radius: 2px; margin: 0 auto 5px; flex-shrink: 0; }
+    .phone-btn-right { position: absolute; right: -2px; top: 65px; width: 2px; height: 32px; background: #d4d4d8; border-radius: 0 2px 2px 0; }
+    .phone-btn-left1 { position: absolute; left: -2px; top: 55px; width: 2px; height: 18px; background: #d4d4d8; border-radius: 2px 0 0 2px; }
+    .phone-btn-left2 { position: absolute; left: -2px; top: 80px; width: 2px; height: 26px; background: #d4d4d8; border-radius: 2px 0 0 2px; }
+    .phone-glow { width: 70px; height: 12px; background: #7c3aed; filter: blur(14px); opacity: 0.2; margin: 5px auto 0; border-radius: 50%; animation: phoneFloat 6s ease-in-out infinite; }
+
+    @media (max-width: 1100px) { .phone-float { display: none; } }
+
+    /* Footer */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid #e4e4e7;
+      background: #ffffff;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a { font-size: 0.8rem; color: #71717a; text-decoration: none; transition: color 0.15s; }
+    .footer-links a:hover { color: #09090b; }
+    .footer-copy { font-size: 0.75rem; color: #a1a1aa; font-family: 'Geist Mono', monospace; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .anim-1 { animation: fadeUp 0.5s ease both; }
+    .anim-2 { animation: fadeUp 0.5s 0.08s ease both; }
+    .anim-3 { animation: fadeUp 0.5s 0.16s ease both; }
+    .anim-4 { animation: fadeUp 0.5s 0.24s ease both; }
+    .anim-5 { animation: fadeUp 0.5s 0.32s ease both; }
+
+    /* ── INTERNSHIP BANNER ── */
+    .internship-banner {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 3rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .internship-banner::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #7c3aed 40%, #2563eb 60%, transparent);
+    }
+    .internship-banner::after {
+      content: '';
+      position: absolute; bottom: -80px; right: -80px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%);
+      pointer-events: none;
+    }
+    .internship-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #4ade80;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+    }
+    .internship-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #fafafa;
+      line-height: 1.1;
+      margin-bottom: 0.875rem;
+    }
+    .internship-desc {
+      font-size: 0.875rem;
+      color: #71717a;
+      line-height: 1.75;
+      max-width: 460px;
+      margin-bottom: 1.5rem;
+    }
+    .internship-pills {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+    .internship-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      height: 28px; padding: 0 0.75rem;
+      border-radius: 6px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      color: #a1a1aa;
+    }
+    .internship-right { position: relative; z-index: 1; }
+    .internship-card-stack {
+      display: flex; flex-direction: column; gap: 0.625rem;
+      min-width: 240px;
+    }
+    .icard {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .icard:hover { border-color: #3f3f46; }
+    .icard-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .icard-title { font-size: 0.8rem; font-weight: 600; color: #fafafa; }
+    .icard-sub { font-size: 0.72rem; color: #52525b; font-family: 'Geist Mono', monospace; margin-top: 1px; }
+
+    @media (max-width: 768px) {
+      .internship-banner { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
+      .internship-right { display: none; }
+    }
+
+    /* Benefits grid */
+    .intern-benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #e4e4e7;
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-top: 1px;
+    }
+    .ibenefit-card {
+      background: #ffffff;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+      transition: background 0.15s;
+    }
+    .ibenefit-card:hover { background: #fafafa; }
+    .ibenefit-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ibenefit-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ibenefit-title {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: #09090b;
+      letter-spacing: -0.01em;
+    }
+    .ibenefit-desc {
+      font-size: 0.8rem;
+      color: #71717a;
+      line-height: 1.7;
+      flex: 1;
+    }
+    .ibenefit-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f4f4f5;
+    }
+    .ibenefit-list li {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.775rem;
+      color: #52525b;
+      font-family: 'Geist Mono', monospace;
+    }
+
+    /* Apply strip */
+    .intern-apply-strip {
+      margin-top: 1px;
+      background: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      padding: 1.25rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .intern-benefits-grid { grid-template-columns: 1fr; }
+      .intern-apply-strip { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── WHY SECTION ── */
+    .why-section {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #e4e4e7;
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .why-item {
+      background: #ffffff;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .why-icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      border: 1px solid #e4e4e7;
+      background: #fafafa;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .why-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #09090b;
+      letter-spacing: -0.01em;
+    }
+    .why-desc {
+      font-size: 0.825rem;
+      color: #71717a;
+      line-height: 1.65;
+    }
+    .why-stat {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      color: #a1a1aa;
+      padding-top: 0.5rem;
+      border-top: 1px solid #f4f4f5;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .why-stat .dot-green { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
+
+    /* ── HOOK / TRY SECTION ── */
+    .hook-section {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+    .hook-card {
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hook-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, #09090b 30%, #09090b 70%, transparent 100%);
+    }
+    .hook-kicker {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #a1a1aa;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1.25rem;
+    }
+    .hook-headline {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: #09090b;
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+    .hook-headline .strike {
+      text-decoration: line-through;
+      color: #d4d4d8;
+    }
+    .hook-sub {
+      font-size: 0.95rem;
+      color: #71717a;
+      max-width: 420px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+    .hook-cta-row {
+      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .hook-note {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.72rem;
+      color: #a1a1aa;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .top-picks-grid { grid-template-columns: 1fr; }
+      .pick-hero { grid-template-columns: 1fr; grid-column: span 1; }
+      .pick-hero-img { display: none; }
+      .cta-card { grid-template-columns: 1fr; }
+      .cta-right { display: none; }
+      .stats-inner { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .ext-card { flex: 0 0 80vw; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .why-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Phone mockup -->
+<div class="phone-float">
+  <div class="phone-body">
+    <div class="phone-btn-right"></div>
+    <div class="phone-btn-left1"></div>
+    <div class="phone-btn-left2"></div>
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="phone-status">
+        <span>9:41</span>
+        <span>▐▐▐ ◈</span>
+      </div>
+      <div class="phone-scan-bar"></div>
+      <div id="phone-cards">
+        <div class="phone-ext-popup delay1">
+          <div class="popup-icon" style="background:#f4f4f5;">🧩</div>
+          <div class="popup-info"><div class="popup-name">Ext Installed</div><div class="popup-sub">✓ active · dev</div></div>
+          <div class="popup-dot"></div>
+        </div>
+        <div class="phone-ext-popup delay2">
+          <div class="popup-icon" style="background:#f0fdf4;">🤖</div>
+          <div class="popup-info"><div class="popup-name">AI Extension</div><div class="popup-sub">✓ active · ai</div></div>
+          <div class="popup-dot"></div>
+        </div>
+        <div class="phone-ext-popup delay3">
+          <div class="popup-icon" style="background:#fff7ed;">🛡️</div>
+          <div class="popup-info"><div class="popup-name">Privacy Guard</div><div class="popup-sub">✓ active · security</div></div>
+          <div class="popup-dot"></div>
+        </div>
+        <div class="phone-ext-popup" style="animation-delay:0.4s">
+          <div class="popup-icon" style="background:#faf5ff;">🎨</div>
+          <div class="popup-info"><div class="popup-name">Color Picker</div><div class="popup-sub">✓ active · design</div></div>
+          <div class="popup-dot"></div>
+        </div>
+      </div>
+      <div style="margin-top:auto;">
+        <div style="display:flex;justify-content:space-between;padding:4px 2px 0;border-top:1px solid #f4f4f5;">
+          <span style="font-family:'Geist Mono',monospace;font-size:5.5px;color:#a1a1aa;">4 active</span>
+          <span style="font-family:'Geist Mono',monospace;font-size:5.5px;color:#16a34a;">● running</span>
+        </div>
+      </div>
+    </div>
+    <div class="phone-home"></div>
+  </div>
+  <div class="phone-glow"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">
+        <i data-lucide="puzzle" style="width:14px;height:14px;color:white;"></i>
+      </div>
+      ExtEngineer
+    </a>
+    <div class="nav-links">
+      <a href="#extensions" class="nav-link">Extensions</a>
+      <a href="#categories" class="nav-link">Categories</a>
+      <a href="#internship" class="nav-link">Internship</a>
+      <a href="#hire" class="nav-link">Hire Us</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <a href="#" class="btn btn-ghost btn-md">
+        <i data-lucide="github" style="width:15px;height:15px;"></i>
+        GitHub
+      </a>
+      <div class="sep"></div>
+      <a href="#extensions" class="btn btn-default btn-md">
+        <i data-lucide="search" style="width:14px;height:14px;"></i>
+        Browse
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="anim-1">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      100+ Handpicked Browser Extensions
+    </div>
+  </div>
+  <h1 class="anim-2">
+    Power up your browser.<br/>
+    <span class="gradient-text">Build smarter workflows.</span>
+  </h1>
+  <p class="anim-3">Ext Engineer curates the best browser extensions for developers, designers, and power users. Stop searching — start building.</p>
+  <div class="hero-actions anim-4">
+    <a href="#extensions" class="btn btn-default btn-xl">
+      <i data-lucide="search" style="width:16px;height:16px;"></i>
+      Explore Extensions
+    </a>
+    <a href="#hire" class="btn btn-outline btn-xl">
+      <i data-lucide="wrench" style="width:16px;height:16px;"></i>
+      Custom Extension?
+    </a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar anim-5">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="num">120<span>+</span></div>
+      <div class="label">// extensions</div>
+    </div>
+    <div class="stat">
+      <div class="num">12</div>
+      <div class="label">// categories</div>
+    </div>
+    <div class="stat">
+      <div class="num">4.8<span>★</span></div>
+      <div class="label">// avg. rating</div>
+    </div>
+  </div>
+</div>
+
+<!-- INTERNSHIP BANNER -->
+<section class="section" id="internship" style="padding-bottom: 2rem;">
+
+  <!-- Top banner -->
+  <div class="internship-banner">
+    <div class="internship-left">
+      <div class="internship-tag">
+        <i data-lucide="graduation-cap" style="width:12px;height:12px;"></i>
+        Now Accepting Applications
+      </div>
+      <h2 class="internship-title">Web Development<br/>Internship</h2>
+      <p class="internship-desc">A hands-on program designed for students who want to go from learning to doing. Build real things, grow your online presence, and leave with proof of your skills.</p>
+      <div class="internship-pills">
+        <span class="internship-pill"><i data-lucide="calendar" style="width:11px;height:11px;"></i> 3 months</span>
+        <span class="internship-pill"><i data-lucide="wifi" style="width:11px;height:11px;"></i> Remote</span>
+        <span class="internship-pill"><i data-lucide="code-2" style="width:11px;height:11px;"></i> HTML5 · CSS3 · JS . Tailwindcss . ReactJs</span>
+        <span class="internship-pill"><i data-lucide="award" style="width:11px;height:11px;"></i> Certificate</span>
+        <span class="internship-pill"><i data-lucide="users" style="width:11px;height:11px;"></i> Open to Students</span>
+      </div>
+      <div style="display:flex;gap:0.625rem;flex-wrap:wrap;">
+        <a href="https://wa.me/923196977218?text=Hi%2C%20I%27m%20interested%20in%20the%20Web%20Development%20Internship." target="_blank" class="btn btn-default btn-lg" style="background:#fafafa;color:#09090b;border-color:#fafafa;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#09090b"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Apply on WhatsApp
+        </a>
+        <a href="https://forms.gle/4P71tZ9U2CUjq3UG9" class="btn btn-outline btn-lg" style="color:#a1a1aa;border-color:#3f3f46;background:transparent;">
+          <i data-lucide="send" style="width:14px;height:14px;"></i>
+          Apply via Google Form
+        </a>
+        <a href="#internship-benefits" class="btn btn-outline btn-lg" style="color:#a1a1aa;border-color:#3f3f46;background:transparent;">
+          See what's included ↓
+        </a>
+      </div>
+    </div>
+    <div class="internship-right">
+      <div class="internship-card-stack">
+        <div class="icard">
+          <div class="icard-icon" style="background:rgba(124,58,237,0.12);"><i data-lucide="linkedin" style="width:16px;height:16px;color:#a78bfa;"></i></div>
+          <div>
+            <div class="icard-title">LinkedIn Profile Guide</div>
+            <div class="icard-sub">Optimized for recruiters</div>
+          </div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon" style="background:rgba(22,163,74,0.12);"><i data-lucide="github" style="width:16px;height:16px;color:#4ade80;"></i></div>
+          <div>
+            <div class="icard-title">GitHub Portfolio</div>
+            <div class="icard-sub">Real commits, real projects</div>
+          </div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon" style="background:rgba(234,88,12,0.12);"><i data-lucide="file-text" style="width:16px;height:16px;color:#fb923c;"></i></div>
+          <div>
+            <div class="icard-title">Resume Building</div>
+            <div class="icard-sub">ATS-friendly template + review</div>
+          </div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon" style="background:rgba(37,99,235,0.12);"><i data-lucide="badge-check" style="width:16px;height:16px;color:#60a5fa;"></i></div>
+          <div>
+            <div class="icard-title">Verified Certificate</div>
+            <div class="icard-sub">Shareable on LinkedIn</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Benefits grid -->
+  <div id="internship-benefits" class="my-4 intern-benefits-grid">
+
+    <div class="ibenefit-card">
+      <div class="ibenefit-header">
+        <div class="ibenefit-icon" style="background:#f5f3ff;">
+          <i data-lucide="linkedin" style="width:20px;height:20px;color:#7c3aed;"></i>
+        </div>
+        <span class="badge badge-purple">Career</span>
+      </div>
+      <div class="ibenefit-title">LinkedIn Profile Guide</div>
+      <div class="ibenefit-desc">We walk you through building a LinkedIn profile that actually gets noticed. Headline, about section, skills, and how to showcase your internship work to attract recruiters.</div>
+      <ul class="ibenefit-list">
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#7c3aed;"></i> Optimized headline & summary</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#7c3aed;"></i> Skills endorsement strategy</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#7c3aed;"></i> Project showcase setup</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#7c3aed;"></i> How to connect with recruiters</li>
+      </ul>
+    </div>
+
+    <div class="ibenefit-card">
+      <div class="ibenefit-header">
+        <div class="ibenefit-icon" style="background:#f0fdf4;">
+          <i data-lucide="github" style="width:20px;height:20px;color:#16a34a;"></i>
+        </div>
+        <span class="badge badge-success">Portfolio</span>
+      </div>
+      <div class="ibenefit-title">GitHub Portfolio Development</div>
+      <div class="ibenefit-desc">Your GitHub becomes your living resume. We help you set up a professional profile, structure your repos, write good READMEs, and show real commit history on live projects.</div>
+      <ul class="ibenefit-list">
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Profile README setup</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Clean repo structure guide</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Real project commits</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Open source contribution intro</li>
+      </ul>
+    </div>
+
+    <div class="ibenefit-card">
+      <div class="ibenefit-header">
+        <div class="ibenefit-icon" style="background:#fff7ed;">
+          <i data-lucide="file-text" style="width:20px;height:20px;color:#ea580c;"></i>
+        </div>
+        <span class="badge badge-warning">Resume</span>
+      </div>
+      <div class="ibenefit-title">Resume Building & Review</div>
+      <div class="ibenefit-desc">Get an ATS-friendly resume built from scratch. We review your content, fix formatting, and help you write bullet points that show impact — not just tasks you did.</div>
+      <ul class="ibenefit-list">
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#ea580c;"></i> ATS-friendly template</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#ea580c;"></i> 1-on-1 resume review session</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#ea580c;"></i> Impact-driven bullet points</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#ea580c;"></i> Tech skills section guidance</li>
+      </ul>
+    </div>
+
+    <div class="ibenefit-card">
+      <div class="ibenefit-header">
+        <div class="ibenefit-icon" style="background:#eff6ff;">
+          <i data-lucide="layout-dashboard" style="width:20px;height:20px;color:#2563eb;"></i>
+        </div>
+        <span class="badge badge-outline">Projects</span>
+      </div>
+      <div class="ibenefit-title">Real Project Experience</div>
+      <div class="ibenefit-desc">Work on browser extensions and web apps that are actually deployed. Not fake tutorial projects — things with real users, real feedback, and real problems to solve.</div>
+      <ul class="ibenefit-list">
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#2563eb;"></i> Live deployed projects</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#2563eb;"></i> HTML · CSS · JavaScript</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#2563eb;"></i> Chrome Extension development</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#2563eb;"></i> Code review & feedback</li>
+      </ul>
+    </div>
+
+    <div class="ibenefit-card">
+      <div class="ibenefit-header">
+        <div class="ibenefit-icon" style="background:#faf5ff;">
+          <i data-lucide="compass" style="width:20px;height:20px;color:#9333ea;"></i>
+        </div>
+        <span class="badge badge-purple">Guidance</span>
+      </div>
+      <div class="ibenefit-title">Proper Career Guidance</div>
+      <div class="ibenefit-desc">Beyond code — we guide you on how to navigate the job market as a fresh dev. What roles to target, how to prepare for interviews, and what skills actually matter right now.</div>
+      <ul class="ibenefit-list">
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#9333ea;"></i> Job market orientation</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#9333ea;"></i> Interview prep basics</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#9333ea;"></i> Freelance vs full-time advice</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#9333ea;"></i> Roadmap for next 6 months</li>
+      </ul>
+    </div>
+
+    <div class="ibenefit-card">
+      <div class="ibenefit-header">
+        <div class="ibenefit-icon" style="background:#f0fdf4;">
+          <i data-lucide="badge-check" style="width:20px;height:20px;color:#16a34a;"></i>
+        </div>
+        <span class="badge badge-success">Certificate</span>
+      </div>
+      <div class="ibenefit-title">Verified Completion Certificate</div>
+      <div class="ibenefit-desc">Finish the program and receive a certificate you can add directly to LinkedIn and your resume. It shows real work done — not just attendance.</div>
+      <ul class="ibenefit-list">
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Digitally signed certificate</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> LinkedIn credential ready</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Verifiable by employers</li>
+        <li><i data-lucide="check" style="width:12px;height:12px;color:#16a34a;"></i> Referral letter on request</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Bottom apply strip -->
+  <div class="my-4 intern-apply-strip">
+    <div>
+      <div style="font-size:0.95rem;font-weight:600;color:#09090b;margin-bottom:0.25rem;">Ready to start your dev career the right way?</div>
+      <div style="font-size:0.8rem;color:#71717a;font-family:'Geist Mono',monospace;">Free · Remote · Open to beginners · Starts rolling</div>
+    </div>
+    <a href="https://forms.gle/4P71tZ9U2CUjq3UG9" target="_blank" class="btn btn-default btn-lg">
+      <i data-lucide="send" style="width:14px;height:14px;"></i>
+      Apply Now — Google Form
+    </a>
+  </div>
+
+</section>
+
+<hr class="section-divider" />
+
+<!-- EXTENSIONS SLIDER -->
+<section class="section" id="extensions">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">// all extensions</div>
+      <h2>Browse Extensions</h2>
+    </div>
+    <a href="#" class="view-all">
+      View all <i data-lucide="arrow-right" style="width:12px;height:12px;"></i>
+    </a>
+  </div>
+
+  <div class="search-wrap">
+    <i data-lucide="search" class="search-icon" style="width:14px;height:14px;"></i>
+    <input type="text" class="input" placeholder="Search extensions..." id="search-input" oninput="filterCards()" />
+  </div>
+
+  <div class="categories" id="categories">
+    <button class="cat-btn active" onclick="setCategory('all',this)">
+      <i data-lucide="grid-3x3" style="width:12px;height:12px;"></i> All
+    </button>
+    <button class="cat-btn" onclick="setCategory('dev',this)">
+      <i data-lucide="code-2" style="width:12px;height:12px;"></i> Dev Tools
+    </button>
+    <button class="cat-btn" onclick="setCategory('productivity',this)">
+      <i data-lucide="zap" style="width:12px;height:12px;"></i> Productivity
+    </button>
+    <button class="cat-btn" onclick="setCategory('design',this)">
+      <i data-lucide="palette" style="width:12px;height:12px;"></i> Design
+    </button>
+    <button class="cat-btn" onclick="setCategory('security',this)">
+      <i data-lucide="shield" style="width:12px;height:12px;"></i> Security
+    </button>
+    <button class="cat-btn" onclick="setCategory('ai',this)">
+      <i data-lucide="sparkles" style="width:12px;height:12px;"></i> AI
+    </button>
+  </div>
+
+  <div class="slider-wrapper" id="slider-wrapper">
+    <div class="slider-track" id="slider-track">
+
+      <a href="#" class="ext-card" data-cat="dev" data-name="Extension Placeholder 1">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#f5f3ff;">🧩</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">dev</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.8</div>
+          <span>1M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="dev" data-name="Extension Placeholder 2">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#fdf4ff;">{ }</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">api</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.9</div>
+          <span>2M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="design" data-name="Extension Placeholder 3">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#f0fdf4;">🎨</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">design</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.7</div>
+          <span>3M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="security" data-name="Extension Placeholder 4">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#fef2f2;">🛡️</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">security</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 5.0</div>
+          <span>30M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="productivity" data-name="Extension Placeholder 5">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#eff6ff;">📰</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">productivity</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.8</div>
+          <span>1M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="productivity" data-name="Extension Placeholder 6">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#fdf4ff;">📋</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">notes</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.6</div>
+          <span>500K+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="security" data-name="Extension Placeholder 7">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#f5f3ff;">👻</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">privacy</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.5</div>
+          <span>7M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="productivity" data-name="Extension Placeholder 8">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#f0fdf4;">✍️</div>
+          <span class="badge badge-warning">Freemium</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">writing</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.7</div>
+          <span>10M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="ai" data-name="Extension Placeholder 9">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#f0fdf4;">🤖</div>
+          <span class="badge badge-purple">New</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">ai</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.4</div>
+          <span>1M+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="dev" data-name="Extension Placeholder 10">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#eff6ff;">🔧</div>
+          <span class="badge badge-warning">Freemium</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">code</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.9</div>
+          <span>400K+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="design" data-name="Extension Placeholder 11">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#fffbeb;">🖌️</div>
+          <span class="badge badge-success">Free</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">css</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.6</div>
+          <span>200K+ users</span>
+        </div>
+      </a>
+
+      <a href="#" class="ext-card" data-cat="ai" data-name="Extension Placeholder 12">
+        <div class="ext-card-top">
+          <div class="ext-icon" style="background:#fdf4ff;">✨</div>
+          <span class="badge badge-purple">New</span>
+        </div>
+        <div class="ext-name">Extension Name</div>
+        <div class="ext-desc">Your extension description goes here. Replace with your own extension details.</div>
+        <div class="ext-tags"><span class="ext-tag">placeholder</span><span class="ext-tag">ai</span></div>
+        <div class="ext-meta">
+          <div class="ext-rating"><i data-lucide="star" style="width:11px;height:11px;fill:#d97706;color:#d97706;"></i> 4.5</div>
+          <span>800K+ users</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="slider-controls">
+    <button class="slider-btn" onclick="slideBy(-1)">
+      <i data-lucide="chevron-left" style="width:15px;height:15px;"></i>
+    </button>
+    <div class="slider-dots" id="slider-dots"></div>
+    <button class="slider-btn" onclick="slideBy(1)">
+      <i data-lucide="chevron-right" style="width:15px;height:15px;"></i>
+    </button>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- WHY PEOPLE USE -->
+<section class="why-section" id="why">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">// the reason</div>
+      <h2>Why people use our extensions</h2>
+    </div>
+  </div>
+
+  <div class="why-grid">
+
+    <div class="why-item">
+      <div class="why-icon-wrap">
+        <i data-lucide="zap" style="width:18px;height:18px;color:#09090b;"></i>
+      </div>
+      <div class="why-title">Save hours every week</div>
+      <div class="why-desc">Stop doing repetitive tasks manually. Our extensions automate the boring stuff so you can focus on what actually matters.</div>
+      <div class="why-stat"><span class="dot-green"></span> avg. 3.5 hrs saved per week</div>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon-wrap">
+        <i data-lucide="shield-check" style="width:18px;height:18px;color:#09090b;"></i>
+      </div>
+      <div class="why-title">Browse without fear</div>
+      <div class="why-desc">Block ads, trackers, and malware before they load. Your data stays yours — no logging, no selling, no compromises.</div>
+      <div class="why-stat"><span class="dot-green"></span> 100% privacy-first picks</div>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon-wrap">
+        <i data-lucide="code-2" style="width:18px;height:18px;color:#09090b;"></i>
+      </div>
+      <div class="why-title">Ship faster as a dev</div>
+      <div class="why-desc">Inspect stacks, debug APIs, and navigate codebases without leaving your browser. Tools built by devs, for devs.</div>
+      <div class="why-stat"><span class="dot-green"></span> used by 2M+ developers</div>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon-wrap">
+        <i data-lucide="palette" style="width:18px;height:18px;color:#09090b;"></i>
+      </div>
+      <div class="why-title">Design right in the browser</div>
+      <div class="why-desc">Pick colors, inspect fonts, measure spacing — all without switching tools. Your browser becomes a design playground.</div>
+      <div class="why-stat"><span class="dot-green"></span> loved by 500K+ designers</div>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon-wrap">
+        <i data-lucide="sparkles" style="width:18px;height:18px;color:#09090b;"></i>
+      </div>
+      <div class="why-title">AI that actually helps</div>
+      <div class="why-desc">Summarize pages, rewrite text, and get answers without opening a new tab. AI baked right into your workflow.</div>
+      <div class="why-stat"><span class="dot-green"></span> 10M+ AI-assisted actions/day</div>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon-wrap">
+        <i data-lucide="star" style="width:18px;height:18px;color:#09090b;"></i>
+      </div>
+      <div class="why-title">Handpicked, not random</div>
+      <div class="why-desc">Every extension here is tested and curated. No bloatware, no sketchy permissions. Only tools we'd use ourselves.</div>
+      <div class="why-stat"><span class="dot-green"></span> 4.8★ avg across all picks</div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- HOOK — Don't Think Just Try -->
+<section class="hook-section">
+  <div class="hook-card">
+    <div class="hook-kicker">// no more excuses</div>
+    <div class="hook-headline">
+      <span class="strike">Think.</span> Just Try.
+    </div>
+    <p class="hook-sub">The best extension is the one you actually install. Stop reading, stop comparing — pick one and see the difference in your next tab.</p>
+    <div class="hook-cta-row">
+      <a href="#extensions" class="btn btn-default btn-xl">
+        <i data-lucide="arrow-down" style="width:16px;height:16px;"></i>
+        Browse Extensions
+      </a>
+      <a href="#hire" class="btn btn-outline btn-xl">
+        <i data-lucide="wrench" style="width:16px;height:16px;"></i>
+        Build a Custom One
+      </a>
+    </div>
+    <div class="hook-note">free to browse · no account needed · takes 30 seconds</div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- CTA -->
+<div class="cta-section" id="hire">
+  <div class="cta-card">
+    <div class="cta-left">
+      <div class="cta-eyebrow">
+        <i data-lucide="wrench" style="width:11px;height:11px;"></i>
+        custom development
+      </div>
+      <h2>Need a <span>custom browser</span><br/>extension built?</h2>
+      <p>We build tailor-made Chrome, Firefox & Edge extensions for businesses and developers. From concept to Chrome Web Store — we handle it all.</p>
+      <div class="cta-features">
+        <div class="cta-feat">
+          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
+          Chrome & Firefox
+        </div>
+        <div class="cta-feat">
+          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
+          Fast delivery
+        </div>
+        <div class="cta-feat">
+          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
+          Full source code
+        </div>
+        <div class="cta-feat">
+          <i data-lucide="check" style="width:12px;height:12px;color:#4ade80;"></i>
+          Post-launch support
+        </div>
+      </div>
+      <div class="cta-buttons">
+        <a href="https://wa.me/923196977218?text=Hi%2C%20I%20need%20a%20custom%20browser%20extension%20built." target="_blank" class="btn btn-whatsapp btn-xl">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Chat on WhatsApp
+        </a>
+        <a href="https://wa.me/923196977218" target="_blank" class="btn btn-outline btn-xl" style="background:transparent;color:#a1a1aa;border-color:#27272a;">
+          <i data-lucide="message-circle" style="width:15px;height:15px;"></i>
+          Start a Chat
+        </a>
+      </div>
+    </div>
+    <div class="cta-right">
+      <div class="cta-phone-badge">
+        <div class="phone-label">WhatsApp Direct</div>
+        <div class="phone-num">+92 319 6977218</div>
+      </div>
+      <div class="cta-status">
+        <div class="status-dot"></div>
+        Available for new projects
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="logo" style="font-size:0.95rem;">
+      <div class="logo-icon" style="width:24px;height:24px;border-radius:6px;">
+        <i data-lucide="puzzle" style="width:12px;height:12px;color:white;"></i>
+      </div>
+      ExtEngineer
+    </a>
+    <div class="footer-links">
+      <a href="#extensions">Extensions</a>
+      <a href="#top-picks">Top Picks</a>
+      <a href="#hire">Hire Us</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 ExtEngineer</div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    initSlider();
+  });
+
+  let activeCategory = 'all';
+
+  function setCategory(cat, btn) {
+    activeCategory = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterCards();
+  }
+
+  function filterCards() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const cards = document.querySelectorAll('#slider-track .ext-card');
+    cards.forEach(card => {
+      const name = card.dataset.name.toLowerCase();
+      const cat = card.dataset.cat;
+      const matchCat = activeCategory === 'all' || cat === activeCategory;
+      const matchSearch = name.includes(q);
+      card.style.display = (matchCat && matchSearch) ? 'block' : 'none';
+    });
+    resetSlider();
+  }
+
+  let currentSlide = 0;
+  let visibleCount = 3;
+  let totalSlides = 0;
+
+  function initSlider() {
+    updateVisibleCount();
+    buildDots();
+    updateSlider();
+    window.addEventListener('resize', () => {
+      updateVisibleCount();
+      buildDots();
+      if (currentSlide >= totalSlides) currentSlide = Math.max(0, totalSlides - 1);
+      updateSlider();
+    });
+    const track = document.getElementById('slider-track');
+    let startX = 0;
+    track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', e => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) slideBy(diff > 0 ? 1 : -1);
+    }, { passive: true });
+  }
+
+  function updateVisibleCount() {
+    const w = window.innerWidth;
+    visibleCount = w < 640 ? 1 : w < 1024 ? 2 : 3;
+    const cards = getVisibleCards();
+    totalSlides = Math.max(0, cards.length - visibleCount);
+  }
+
+  function getVisibleCards() {
+    return Array.from(document.querySelectorAll('#slider-track .ext-card')).filter(c => c.style.display !== 'none');
+  }
+
+  function buildDots() {
+    const dotsEl = document.getElementById('slider-dots');
+    dotsEl.innerHTML = '';
+    const cards = getVisibleCards();
+    totalSlides = Math.max(0, cards.length - visibleCount);
+    for (let i = 0; i <= totalSlides; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot-indicator' + (i === currentSlide ? ' active' : '');
+      d.onclick = () => goToSlide(i);
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function updateSlider() {
+    const cards = getVisibleCards();
+    if (cards.length === 0) return;
+    const cardWidth = cards[0].offsetWidth + 16;
+    const offset = -currentSlide * cardWidth;
+    document.getElementById('slider-track').style.transform = `translateX(${offset}px)`;
+    document.querySelectorAll('.dot-indicator').forEach((d, i) => {
+      d.classList.toggle('active', i === currentSlide);
+    });
+  }
+
+  function slideBy(dir) {
+    const cards = getVisibleCards();
+    totalSlides = Math.max(0, cards.length - visibleCount);
+    currentSlide = Math.max(0, Math.min(currentSlide + dir, totalSlides));
+    updateSlider();
+  }
+
+  function goToSlide(i) {
+    currentSlide = i;
+    updateSlider();
+  }
+
+  function resetSlider() {
+    currentSlide = 0;
+    updateVisibleCount();
+    buildDots();
+    updateSlider();
+  }
+</script>
+
+</body>
+</html>
