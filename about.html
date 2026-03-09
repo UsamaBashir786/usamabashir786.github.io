@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — ExtEngineer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#fafafa;--bg-card:#ffffff;--bg-subtle:#f4f4f5;--border:#e4e4e7;--border-mid:#d4d4d8;--text:#09090b;--text-muted:#71717a;--text-dim:#a1a1aa;--text-mid:#52525b;--dot-color:#d4d4d8}
+    body.dark{--bg:#09090b;--bg-card:#18181b;--bg-subtle:#27272a;--border:#27272a;--border-mid:#3f3f46;--text:#fafafa;--text-muted:#a1a1aa;--text-dim:#52525b;--text-mid:#71717a;--dot-color:#27272a}
+    body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+    body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,var(--dot-color) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;z-index:0;opacity:.5}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border-mid);border-radius:99px}
+    nav{position:sticky;top:0;z-index:100;background:rgba(250,250,250,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background .3s}
+    body.dark nav{background:rgba(9,9,11,.92)}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .logo{font-family:'Geist',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:-.03em;display:flex;align-items:center;gap:8px;color:var(--text);text-decoration:none}
+    .logo-icon{width:28px;height:28px;background:#09090b;border-radius:7px;display:flex;align-items:center;justify-content:center}
+    body.dark .logo-icon{background:#fafafa}
+    body.dark .logo-icon i{color:#09090b!important}
+    .nav-links{display:flex;align-items:center;gap:.125rem}
+    .nav-link{padding:.4rem .75rem;border-radius:6px;font-size:.875rem;font-weight:500;color:var(--text-mid);text-decoration:none;transition:all .15s}
+    .nav-link:hover,.nav-link.active{background:var(--bg-subtle);color:var(--text)}
+    .sep{width:1px;height:20px;background:var(--border)}
+    .dark-toggle{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+    .dark-toggle:hover{border-color:var(--border-mid);background:var(--bg-subtle);color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:6px;font-family:'Geist',sans-serif;font-weight:500;font-size:.875rem;border-radius:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;text-decoration:none;white-space:nowrap}
+    .btn-md{height:40px;padding:0 1rem}
+    .btn-lg{height:44px;padding:0 1.25rem;font-size:.95rem}
+    .btn-xl{height:52px;padding:0 1.5rem;font-size:1rem;font-weight:600}
+    .btn-default{background:#09090b;color:#fafafa;border-color:#09090b}
+    .btn-default:hover{background:#27272a}
+    .btn-ghost{background:transparent;color:#3f3f46;border-color:transparent}
+    .btn-ghost:hover{background:#f4f4f5;color:#09090b}
+    .btn-outline{background:var(--bg-card);color:var(--text);border-color:var(--border)}
+    .btn-outline:hover{background:var(--bg-subtle);border-color:var(--border-mid)}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:.15rem .6rem;border-radius:99px;font-family:'Geist Mono',monospace;font-size:.72rem;font-weight:500;border:1px solid}
+    .badge-purple{background:#faf5ff;color:#7c3aed;border-color:#e9d5ff}
+    .badge-success{background:#f0fdf4;color:#16a34a;border-color:#bbf7d0}
+    .badge-outline{background:transparent;color:var(--text-mid);border-color:var(--border)}
+    .section-eyebrow{font-family:'Geist Mono',monospace;font-size:.72rem;font-weight:500;color:#7c3aed;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px}
+
+    /* PAGE SPECIFIC */
+    .page-hero{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:4rem 1.5rem 3rem}
+    .page-hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+    .page-title{font-size:clamp(2.5rem,5vw,4rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--text);margin-bottom:1.25rem}
+    .page-title .gradient-text{background:linear-gradient(135deg,#7c3aed,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .page-subtitle{font-size:1rem;color:var(--text-muted);line-height:1.75;margin-bottom:2rem}
+
+    .about-avatar-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+    .about-avatar{width:280px;height:280px;border-radius:24px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #e9d5ff;display:flex;align-items:center;justify-content:center;font-size:7rem;position:relative;overflow:hidden}
+    body.dark .about-avatar{background:linear-gradient(135deg,#1e1030,#2d1b69);border-color:#3b2a6b}
+    .about-avatar::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(124,58,237,.15),transparent 60%)}
+    .floating-badge{position:absolute;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:.625rem .875rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 4px 16px rgba(0,0,0,.08);animation:floatBadge 4s ease-in-out infinite}
+    .floating-badge-1{bottom:-16px;left:-20px;animation-delay:0s}
+    .floating-badge-2{top:-16px;right:-20px;animation-delay:1.5s}
+    @keyframes floatBadge{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .fb-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .fb-title{font-size:.78rem;font-weight:600;color:var(--text)}
+    .fb-sub{font-size:.68rem;color:var(--text-dim);font-family:'Geist Mono',monospace}
+
+    .content-section{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 1.5rem 4rem}
+    .section-header{margin-bottom:2rem}
+    .section-header h2{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;color:var(--text)}
+
+    .story-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start}
+    .story-text{font-size:.9rem;color:var(--text-muted);line-height:1.85}
+    .story-text p+p{margin-top:1.1rem}
+    .story-text strong{color:var(--text);font-weight:600}
+
+    .quick-facts{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;gap:.875rem}
+    .quick-fact{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg-subtle);border-radius:8px}
+    .qf-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .qf-label{font-size:.72rem;color:var(--text-dim);font-family:'Geist Mono',monospace;margin-bottom:2px}
+    .qf-val{font-size:.85rem;font-weight:600;color:var(--text)}
+
+    .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .skill-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:all .2s}
+    .skill-card:hover{border-color:var(--border-mid);box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-2px)}
+    .skill-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+    .skill-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
+    .skill-desc{font-size:.78rem;color:var(--text-muted);line-height:1.65}
+    .skill-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.75rem}
+    .skill-tag{font-family:'Geist Mono',monospace;font-size:.65rem;padding:.1rem .45rem;border-radius:4px;background:var(--bg-subtle);color:var(--text-mid);border:1px solid var(--border)}
+
+    .values-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    .value-item{background:var(--bg-card);padding:1.75rem;transition:background .15s}
+    .value-item:hover{background:var(--bg-subtle)}
+    .value-icon{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;margin-bottom:.875rem}
+    .value-title{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:.4rem}
+    .value-desc{font-size:.8rem;color:var(--text-muted);line-height:1.65}
+
+    .timeline{display:flex;flex-direction:column;gap:0}
+    .tl-item{display:grid;grid-template-columns:120px 1fr;gap:1.5rem;position:relative;padding-bottom:2rem}
+    .tl-item:last-child{padding-bottom:0}
+    .tl-item::before{content:'';position:absolute;left:119px;top:24px;bottom:0;width:1px;background:var(--border)}
+    .tl-item:last-child::before{display:none}
+    .tl-year{text-align:right;font-family:'Geist Mono',monospace;font-size:.78rem;font-weight:600;color:var(--text-dim);padding-top:.35rem}
+    .tl-dot{position:absolute;left:113px;top:.35rem;width:13px;height:13px;border-radius:50%;background:var(--bg-card);border:2px solid var(--border-mid)}
+    .tl-dot.active{background:#7c3aed;border-color:#7c3aed}
+    .tl-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem}
+    .tl-title{font-size:.875rem;font-weight:600;color:var(--text);margin-bottom:.25rem}
+    .tl-desc{font-size:.78rem;color:var(--text-muted);line-height:1.65}
+
+    .cta-strip{background:#09090b;border:1px solid #27272a;border-radius:14px;padding:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;position:relative;overflow:hidden}
+    .cta-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#7c3aed,#db2777,transparent)}
+    .cta-strip::after{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.15),transparent 70%);pointer-events:none}
+    .cta-strip h3{font-size:1.375rem;font-weight:700;color:#fafafa;letter-spacing:-.03em;margin-bottom:.3rem}
+    .cta-strip p{font-size:.85rem;color:#71717a}
+
+    footer{position:relative;z-index:1;border-top:1px solid var(--border);background:var(--bg-card);transition:background .3s}
+    .footer-inner{max-width:1200px;margin:0 auto;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .footer-links{display:flex;gap:1.25rem}
+    .footer-links a{font-size:.8rem;color:var(--text-muted);text-decoration:none;transition:color .15s}
+    .footer-links a:hover{color:var(--text)}
+    .footer-copy{font-size:.75rem;color:var(--text-dim);font-family:'Geist Mono',monospace}
+
+    .section-divider{border:none;border-top:1px solid var(--border);margin:0 1.5rem 3rem;max-width:1200px;margin-left:auto;margin-right:auto}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .anim-1{animation:fadeUp .5s ease both}
+    .anim-2{animation:fadeUp .5s .08s ease both}
+    .anim-3{animation:fadeUp .5s .16s ease both}
+    .anim-4{animation:fadeUp .5s .24s ease both}
+    @media(max-width:768px){.page-hero-inner{grid-template-columns:1fr}.about-avatar-wrap{display:none}.story-grid{grid-template-columns:1fr}.skills-grid{grid-template-columns:1fr}.values-grid{grid-template-columns:1fr}.nav-links{display:none}.footer-inner{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon"><i data-lucide="code" style="width:14px;height:14px;color:white;"></i></div>
+      WebEngineer
+    </a>
+    <div class="nav-links">
+      <a href="index.html#internship" class="nav-link">Internship</a>
+      <a href="index.html#services" class="nav-link">Services</a>
+      <a href="index.html#portfolio" class="nav-link">Portfolio</a>
+      <a href="about.html" class="nav-link active">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      <button class="dark-toggle" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode">
+        <i data-lucide="moon" style="width:15px;height:15px;" id="toggle-icon"></i>
+      </button>
+      <div class="sep"></div>
+      <a href="https://wa.me/923196977218" target="_blank" class="btn btn-default btn-md">
+        <i data-lucide="message-circle" style="width:14px;height:14px;"></i>
+        Contact
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="anim-1">
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:.3rem .8rem;border-radius:99px;border:1px solid var(--border);background:var(--bg-card);font-size:.78rem;font-weight:500;color:var(--text-mid);font-family:'Geist Mono',monospace;margin-bottom:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;animation:pulse 2s infinite;display:inline-block;"></span>
+        Based in Pakistan · Working Globally
+      </div>
+      <h1 class="page-title">The developer<br/><span class="gradient-text">behind the work.</span></h1>
+      <p class="page-subtitle">5+ years building browser extensions, web apps, and now — mentoring the next generation of Pakistani developers. Here's my story.</p>
+      <div style="display:flex;gap:.625rem;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-default btn-lg">
+          <i data-lucide="message-circle" style="width:15px;height:15px;"></i>
+          Get in Touch
+        </a>
+        <a href="index.html#internship" class="btn btn-outline btn-lg">
+          <i data-lucide="graduation-cap" style="width:15px;height:15px;"></i>
+          Join Internship
+        </a>
+      </div>
+    </div>
+    <div class="about-avatar-wrap anim-2">
+      <div class="about-avatar">👨‍💻</div>
+      <div class="floating-badge floating-badge-1">
+        <div class="fb-icon" style="background:#f0fdf4;"><i data-lucide="code-2" style="width:16px;height:16px;color:#16a34a;"></i></div>
+        <div><div class="fb-title">5+ Years</div><div class="fb-sub">experience</div></div>
+      </div>
+      <div class="floating-badge floating-badge-2">
+        <div class="fb-icon" style="background:#faf5ff;"><i data-lucide="users" style="width:16px;height:16px;color:#7c3aed;"></i></div>
+        <div><div class="fb-title">Mentorship</div><div class="fb-sub">open now</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<div class="content-section anim-3">
+  <div class="section-header">
+    <div class="section-eyebrow">// my story</div>
+    <h2>How it started</h2>
+  </div>
+  <div class="story-grid">
+    <div class="story-text">
+      <p>Main ek self-taught developer hun jo Pakistan mein kaam karta hai. Mera safar tab shuru hua jab mujhe pata chala ke <strong>browser extensions</strong> — wo choti si cheezein jo Chrome mein install hoti hain — kitni powerful ho sakti hain. Ek extension developer ke liye ek poora product ban sakti hai.</p>
+      <p>Shuru mein mujhe bhi wahi mushkilaat aain jo har naye developer ko aati hain: tutorials achhe nahi milte, mentor nahi hota, aur real projects pe kaam karne ka moqa nahi milta. Main chahta tha ke Pakistan mein seekhne walon ko <strong>wo guidance mile jo mujhe nahi mili</strong>.</p>
+      <p>Isliye ExtEngineer banaya — ek jagah jahan <strong>free internship</strong>, <strong>paid mentorship</strong>, aur <strong>real client projects</strong> sab available hon. Students ko sirf seekhna nahi chahiye — unhe <em>kaam</em> karna chahiye. Real projects, real commits, real experience.</p>
+      <p>Aaj main browser extensions, web apps, aur landing pages build karta hun — clients ke liye bhi aur apne students ke liye bhi. Har project ek learning opportunity hai, aur har student ek investment hai Pakistan ke future tech ecosystem mein.</p>
+    </div>
+    <div>
+      <div class="quick-facts">
+        <div style="font-size:.78rem;font-weight:600;color:var(--text-muted);font-family:'Geist Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem;">// quick facts</div>
+        <div class="quick-fact">
+          <div class="qf-icon" style="background:#f5f3ff;"><i data-lucide="map-pin" style="width:16px;height:16px;color:#7c3aed;"></i></div>
+          <div><div class="qf-label">Location</div><div class="qf-val">Pakistan 🇵🇰</div></div>
+        </div>
+        <div class="quick-fact">
+          <div class="qf-icon" style="background:#f0fdf4;"><i data-lucide="calendar" style="width:16px;height:16px;color:#16a34a;"></i></div>
+          <div><div class="qf-label">Experience</div><div class="qf-val">5+ Years</div></div>
+        </div>
+        <div class="quick-fact">
+          <div class="qf-icon" style="background:#fff7ed;"><i data-lucide="puzzle" style="width:16px;height:16px;color:#ea580c;"></i></div>
+          <div><div class="qf-label">Specialization</div><div class="qf-val">Browser Extensions</div></div>
+        </div>
+        <div class="quick-fact">
+          <div class="qf-icon" style="background:#eff6ff;"><i data-lucide="graduation-cap" style="width:16px;height:16px;color:#2563eb;"></i></div>
+          <div><div class="qf-label">Internship</div><div class="qf-val">Free · Open Now</div></div>
+        </div>
+        <div class="quick-fact">
+          <div class="qf-icon" style="background:#f5f3ff;"><i data-lucide="smartphone" style="width:16px;height:16px;color:#7c3aed;"></i></div>
+          <div><div class="qf-label">WhatsApp</div><div class="qf-val">+92 319 6977218</div></div>
+        </div>
+        <div class="quick-fact">
+          <div class="qf-icon" style="background:#f0fdf4;"><i data-lucide="zap" style="width:16px;height:16px;color:#16a34a;"></i></div>
+          <div><div class="qf-label">Response Time</div><div class="qf-val">Under 2 Hours</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- SKILLS -->
+<div class="content-section anim-4">
+  <div class="section-header">
+    <div class="section-eyebrow">// tech stack</div>
+    <h2>What I work with</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon" style="background:#faf5ff;"><i data-lucide="puzzle" style="width:22px;height:22px;color:#7c3aed;"></i></div>
+      <div class="skill-title">Browser Extensions</div>
+      <div class="skill-desc">Chrome, Firefox & Edge extensions se shuru karke Chrome Web Store publish karne tak — poora lifecycle handle karta hun.</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Manifest V3</span><span class="skill-tag">Chrome API</span><span class="skill-tag">Content Scripts</span><span class="skill-tag">Service Workers</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon" style="background:#f0fdf4;"><i data-lucide="layout-dashboard" style="width:22px;height:22px;color:#16a34a;"></i></div>
+      <div class="skill-title">Frontend Development</div>
+      <div class="skill-desc">Clean, responsive, aur fast UIs — TailwindCSS aur React ke saath modern web apps build karta hun.</div>
+      <div class="skill-tags">
+        <span class="skill-tag">HTML5</span><span class="skill-tag">CSS3</span><span class="skill-tag">JavaScript</span><span class="skill-tag">ReactJs</span><span class="skill-tag">TailwindCSS</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon" style="background:#fff7ed;"><i data-lucide="zap" style="width:22px;height:22px;color:#ea580c;"></i></div>
+      <div class="skill-title">AI Integration</div>
+      <div class="skill-desc">OpenAI API aur browser extensions ko combine karke smart tools banata hun jo real problems solve karte hain.</div>
+      <div class="skill-tags">
+        <span class="skill-tag">OpenAI API</span><span class="skill-tag">Prompt Engineering</span><span class="skill-tag">AI Tools</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- VALUES -->
+<div class="content-section">
+  <div class="section-header">
+    <div class="section-eyebrow">// what I believe in</div>
+    <h2>My values as a developer & mentor</h2>
+  </div>
+  <div class="values-grid">
+    <div class="value-item">
+      <div class="value-icon"><i data-lucide="heart" style="width:18px;height:18px;color:#7c3aed;"></i></div>
+      <div class="value-title">Real Learning Over Certificates</div>
+      <div class="value-desc">Mujhe nahi lagta ke ek certificate aapko developer banata hai. Real projects pe kaam karna aur problems solve karna — yahi asli seekhna hai. Internship mein main isi cheez pe focus karta hun.</div>
+    </div>
+    <div class="value-item">
+      <div class="value-icon"><i data-lucide="shield-check" style="width:18px;height:18px;color:#16a34a;"></i></div>
+      <div class="value-title">Transparency First</div>
+      <div class="value-desc">Koi hidden fees, koi false promises nahi. Jo price hai woh clearly batata hun. Payment pehle hota hai kyunke yahi professional way hai — dono sides ke liye.</div>
+    </div>
+    <div class="value-item">
+      <div class="value-icon"><i data-lucide="users" style="width:18px;height:18px;color:#2563eb;"></i></div>
+      <div class="value-title">Community Over Competition</div>
+      <div class="value-desc">Pakistan mein developers ki community grow karni chahiye. Isliye free internship deta hun — taake zyada log tech mein aa sakein, sirf woh nahi jo afford kar sakein.</div>
+    </div>
+    <div class="value-item">
+      <div class="value-icon"><i data-lucide="code-2" style="width:18px;height:18px;color:#ea580c;"></i></div>
+      <div class="value-title">Ship Real Work</div>
+      <div class="value-desc">Tutorial hell se niklo. Hum real deployed projects banate hain — cheezein jo actually live hain, real users hain, aur aapke GitHub pe real commits hain. Portfolio mein fakeness nahi chalti.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- TIMELINE -->
+<div class="content-section">
+  <div class="section-header">
+    <div class="section-eyebrow">// journey</div>
+    <h2>Timeline</h2>
+  </div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-year">2019</div>
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-title">Started Web Development</div>
+        <div class="tl-desc">HTML/CSS se shuru kiya — YouTube tutorials, documentation, aur bohot saare errors. Self-taught journey ka pehla qadam.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2020</div>
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-title">First Browser Extension</div>
+        <div class="tl-desc">Pehli Chrome extension banayi — basic tab manager. Chrome Web Store pe publish ki. Isi din se extensions mein interest shuru hua.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2021–22</div>
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-title">Client Work & ReactJs</div>
+        <div class="tl-desc">Freelance clients ke liye web apps aur extensions build kiye. ReactJs aur TailwindCSS adopt kiya. Pehli baar real deadlines aur real payments.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2023</div>
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-title">AI Extensions — OpenAI API</div>
+        <div class="tl-desc">AI tools ko browser extensions mein integrate kiya. 1K+ users wali AI Page Summarizer extension launch ki.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2024</div>
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-title">Mentorship & Teaching</div>
+        <div class="tl-desc">Shuru mein dosto ko guide kiya — phir realize hua ke Pakistan mein proper mentorship ki bohot zaroorat hai.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2025 →</div>
+      <div class="tl-dot active"></div>
+      <div class="tl-card" style="border-color:#7c3aed;">
+        <div class="tl-title" style="color:#7c3aed;">ExtEngineer — Official Launch</div>
+        <div class="tl-desc">Free internship program, paid mentorship, aur custom development — ek platform pe. Abhi accepting applications.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- CTA -->
+<div class="content-section">
+  <div class="cta-strip">
+    <div style="position:relative;z-index:1;">
+      <h3>Ready to work together?</h3>
+      <p>Internship join karo, mentorship book karo, ya apna project discuss karo.</p>
+    </div>
+    <div style="display:flex;gap:.625rem;flex-wrap:wrap;position:relative;z-index:1;">
+      <a href="https://wa.me/923196977218" target="_blank" class="btn btn-lg" style="background:#fafafa;color:#09090b;border-color:#fafafa;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#09090b"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="contact.html" class="btn btn-outline btn-lg" style="color:#a1a1aa;border-color:#3f3f46;background:transparent;">
+        <i data-lucide="send" style="width:14px;height:14px;"></i>
+        Contact Form
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="logo" style="font-size:.95rem;">
+      <div class="logo-icon" style="width:24px;height:24px;border-radius:6px;"><i data-lucide="puzzle" style="width:12px;height:12px;color:white;"></i></div>
+      ExtEngineer
+    </a>
+    <div class="footer-links">
+      <a href="index.html#internship">Internship</a>
+      <a href="index.html#services">Services</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+    <div class="footer-copy">© 2026 ExtEngineer</div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded',()=>{
+    lucide.createIcons();
+    if(localStorage.getItem('dark')==='1'){document.body.classList.add('dark');document.getElementById('toggle-icon').setAttribute('data-lucide','sun');lucide.createIcons()}
+  });
+  function toggleDark(){const d=document.body.classList.toggle('dark');const i=document.getElementById('toggle-icon');i.setAttribute('data-lucide',d?'sun':'moon');lucide.createIcons();localStorage.setItem('dark',d?'1':'0')}
+</script>
+<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
+</body>
+</html>

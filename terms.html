@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms & Conditions — ExtEngineer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#fafafa;--bg-card:#ffffff;--bg-subtle:#f4f4f5;--border:#e4e4e7;--border-mid:#d4d4d8;--text:#09090b;--text-muted:#71717a;--text-dim:#a1a1aa;--text-mid:#52525b;--dot-color:#d4d4d8}
+    body.dark{--bg:#09090b;--bg-card:#18181b;--bg-subtle:#27272a;--border:#27272a;--border-mid:#3f3f46;--text:#fafafa;--text-muted:#a1a1aa;--text-dim:#52525b;--text-mid:#71717a;--dot-color:#27272a}
+    body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+    body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,var(--dot-color) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;z-index:0;opacity:.5}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border-mid);border-radius:99px}
+    nav{position:sticky;top:0;z-index:100;background:rgba(250,250,250,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background .3s}
+    body.dark nav{background:rgba(9,9,11,.92)}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .logo{font-family:'Geist',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:-.03em;display:flex;align-items:center;gap:8px;color:var(--text);text-decoration:none}
+    .logo-icon{width:28px;height:28px;background:#09090b;border-radius:7px;display:flex;align-items:center;justify-content:center}
+    body.dark .logo-icon{background:#fafafa}
+    body.dark .logo-icon i{color:#09090b!important}
+    .nav-links{display:flex;align-items:center;gap:.125rem}
+    .nav-link{padding:.4rem .75rem;border-radius:6px;font-size:.875rem;font-weight:500;color:var(--text-mid);text-decoration:none;transition:all .15s}
+    .nav-link:hover{background:var(--bg-subtle);color:var(--text)}
+    .sep{width:1px;height:20px;background:var(--border)}
+    .dark-toggle{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+    .dark-toggle:hover{border-color:var(--border-mid);background:var(--bg-subtle);color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:6px;font-family:'Geist',sans-serif;font-weight:500;font-size:.875rem;border-radius:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;text-decoration:none;white-space:nowrap}
+    .btn-md{height:40px;padding:0 1rem}
+    .btn-lg{height:44px;padding:0 1.25rem;font-size:.95rem}
+    .btn-default{background:#09090b;color:#fafafa;border-color:#09090b}
+    .btn-default:hover{background:#27272a}
+
+    .page-wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:4rem 1.5rem}
+    .page-eyebrow{font-family:'Geist Mono',monospace;font-size:.72rem;font-weight:500;color:#7c3aed;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+    .page-title{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.04em;color:var(--text);margin-bottom:.75rem}
+    .page-meta{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap}
+    .meta-tag{display:inline-flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:.72rem;color:var(--text-dim);background:var(--bg-card);border:1px solid var(--border);padding:.2rem .65rem;border-radius:6px}
+
+    /* TOC */
+    .toc{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem}
+    .toc-title{font-size:.78rem;font-weight:600;color:var(--text);font-family:'Geist Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+    .toc-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+    .toc-list li a{font-size:.82rem;color:var(--text-muted);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .15s}
+    .toc-list li a:hover{color:#7c3aed}
+    .toc-num{font-family:'Geist Mono',monospace;font-size:.68rem;color:var(--text-dim);width:24px;flex-shrink:0}
+
+    .policy-body{display:flex;flex-direction:column;gap:1.5rem}
+    .policy-section{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .ps-header{display:flex;align-items:center;gap:.75rem;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg-subtle)}
+    .ps-num{width:28px;height:28px;border-radius:6px;background:#09090b;color:#fafafa;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:.72rem;font-weight:600;flex-shrink:0}
+    body.dark .ps-num{background:#fafafa;color:#09090b}
+    .ps-title{font-size:.9rem;font-weight:700;color:var(--text)}
+    .ps-body{padding:1.5rem;font-size:.85rem;color:var(--text-muted);line-height:1.85}
+    .ps-body p+p{margin-top:.875rem}
+    .ps-body strong{color:var(--text);font-weight:600}
+    .ps-body ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.75rem}
+    .ps-body ul li{display:flex;align-items:flex-start;gap:7px;font-size:.82rem}
+    .ps-body ul li::before{content:'—';color:var(--text-dim);font-family:'Geist Mono',monospace;font-size:.75rem;flex-shrink:0;margin-top:2px}
+    .ps-body a{color:#7c3aed;text-decoration:none}
+    .ps-body a:hover{text-decoration:underline}
+
+    .warn-box{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;display:flex;gap:.75rem;align-items:flex-start}
+    body.dark .warn-box{background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2)}
+    .warn-box i{flex-shrink:0;color:#d97706;margin-top:2px}
+    .warn-box p{font-size:.82rem;color:#92400e;line-height:1.7}
+    body.dark .warn-box p{color:#fbbf24}
+
+    .contact-strip{background:#09090b;border:1px solid #27272a;border-radius:12px;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:2rem;position:relative;overflow:hidden}
+    .contact-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#7c3aed,transparent)}
+    .contact-strip-text h4{font-size:.95rem;font-weight:600;color:#fafafa;margin-bottom:.2rem}
+    .contact-strip-text p{font-size:.78rem;color:#71717a}
+
+    footer{position:relative;z-index:1;border-top:1px solid var(--border);background:var(--bg-card);transition:background .3s}
+    .footer-inner{max-width:1200px;margin:0 auto;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .footer-links{display:flex;gap:1.25rem}
+    .footer-links a{font-size:.8rem;color:var(--text-muted);text-decoration:none;transition:color .15s}
+    .footer-links a:hover{color:var(--text)}
+    .footer-copy{font-size:.75rem;color:var(--text-dim);font-family:'Geist Mono',monospace}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .anim-1{animation:fadeUp .5s ease both}.anim-2{animation:fadeUp .5s .08s ease both}
+    @media(max-width:768px){.nav-links{display:none}.footer-inner{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon"><i data-lucide="code" style="width:14px;height:14px;color:white;"></i></div>
+      WebEngineer
+    </a>
+    <div class="nav-links">
+      <a href="index.html#internship" class="nav-link">Internship</a>
+      <a href="index.html#services" class="nav-link">Services</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      <button class="dark-toggle" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode">
+        <i data-lucide="moon" style="width:15px;height:15px;" id="toggle-icon"></i>
+      </button>
+      <div class="sep"></div>
+      <a href="https://wa.me/923196977218" target="_blank" class="btn btn-default btn-md">
+        <i data-lucide="message-circle" style="width:14px;height:14px;"></i>
+        Contact
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="anim-1">
+    <div class="page-eyebrow">// legal</div>
+    <h1 class="page-title">Terms & Conditions</h1>
+    <div class="page-meta">
+      <span class="meta-tag"><i data-lucide="calendar" style="width:11px;height:11px;"></i> Effective: January 2026</span>
+      <span class="meta-tag"><i data-lucide="globe" style="width:11px;height:11px;"></i> extengr.com</span>
+      <span class="meta-tag"><i data-lucide="flag" style="width:11px;height:11px;"></i> Pakistan Law</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc anim-1">
+    <div class="toc-title"><i data-lucide="list" style="width:13px;height:13px;"></i> Table of Contents</div>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">01</span> Acceptance of Terms</a></li>
+      <li><a href="#s2"><span class="toc-num">02</span> Services Overview</a></li>
+      <li><a href="#s3"><span class="toc-num">03</span> Internship Program Terms</a></li>
+      <li><a href="#s4"><span class="toc-num">04</span> Paid Services & Payments</a></li>
+      <li><a href="#s5"><span class="toc-num">05</span> Refund Policy</a></li>
+      <li><a href="#s6"><span class="toc-num">06</span> Custom Development Terms</a></li>
+      <li><a href="#s7"><span class="toc-num">07</span> Intellectual Property</a></li>
+      <li><a href="#s8"><span class="toc-num">08</span> Limitation of Liability</a></li>
+      <li><a href="#s9"><span class="toc-num">09</span> Code of Conduct</a></li>
+      <li><a href="#s10"><span class="toc-num">10</span> Governing Law & Contact</a></li>
+    </ul>
+  </div>
+
+  <div class="policy-body anim-2">
+
+    <div id="s1" class="policy-section">
+      <div class="ps-header"><div class="ps-num">01</div><div class="ps-title">Acceptance of Terms</div></div>
+      <div class="ps-body">
+        <p>Ye Terms & Conditions ExtEngineer ki tamam services par apply hoti hain. Website use karne, internship apply karne, ya koi bhi paid service purchase karne se aap in terms se agree karte hain.</p>
+        <p>Agar aap in terms se disagree karte hain, toh please hamari services use mat karein. Kisi bhi term ke baare mein sawal ho toh <strong>pehle WhatsApp pe contact karein</strong> — service start karne se pehle sab clear ho jaayega.</p>
+        <div class="warn-box">
+          <i data-lucide="alert-triangle" style="width:15px;height:15px;"></i>
+          <p>Ye terms anytime update ho sakti hain. Continued use of our services after updates means acceptance. Major changes ke liye active clients ko inform kiya jaayega.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="s2" class="policy-section">
+      <div class="ps-header"><div class="ps-num">02</div><div class="ps-title">Services Overview</div></div>
+      <div class="ps-body">
+        <p>ExtEngineer ye services provide karta hai:</p>
+        <ul>
+          <li><strong>Free Web Development Internship</strong> — 2-month structured program for students</li>
+          <li><strong>Resume Review</strong> — Written feedback aur ATS optimization (500 PKR)</li>
+          <li><strong>1-on-1 Mentorship Sessions</strong> — 30 min (800 PKR) ya 1 hour (1,500 PKR) live sessions</li>
+          <li><strong>LinkedIn Profile Optimization</strong> — Full profile overhaul (800 PKR)</li>
+          <li><strong>Custom Web Development</strong> — Websites, extensions, web apps (quote-based)</li>
+        </ul>
+        <p style="margin-top:.875rem;">Service pricing aur scope change ho sakti hai. Current pricing website pe listed hai aur WhatsApp pe confirm ki jaayegi.</p>
+      </div>
+    </div>
+
+    <div id="s3" class="policy-section">
+      <div class="ps-header"><div class="ps-num">03</div><div class="ps-title">Internship Program Terms</div></div>
+      <div class="ps-body">
+        <p>Free internship program ke specific terms:</p>
+        <ul>
+          <li>Internship bilkul <strong>free hai</strong> — koi bhi charge nahi lagega kabhi bhi</li>
+          <li>Duration: <strong>2 months</strong> — daily tasks, code reviews, aur mentor check-ins included</li>
+          <li>Completion Certificate tabhi milega jab program <strong>successfully complete</strong> hoga</li>
+          <li>Intern ki responsibility hai ke woh <strong>committed aur consistent</strong> rahe</li>
+          <li>Serious misconduct ya prolonged inactivity par program se remove kiya ja sakta hai</li>
+          <li>Program content, curriculum, aur schedule ke decisions mentor ke paas hain</li>
+          <li>Interns ka kaam real projects mein use ho sakta hai — with proper credit</li>
+          <li>Internship during — koi confidential client information share nahi karni</li>
+        </ul>
+        <p style="margin-top:.875rem;">Internship ek learning environment hai — respectful behavior expected hai sab se.</p>
+      </div>
+    </div>
+
+    <div id="s4" class="policy-section">
+      <div class="ps-header"><div class="ps-num">04</div><div class="ps-title">Paid Services & Payments</div></div>
+      <div class="ps-body">
+        <p><strong>Payment-first policy:</strong> Tamam paid services ke liye payment pehle hoti hai — session ya delivery baad mein. Ye ek clear aur professional process hai.</p>
+        <ul>
+          <li>Accepted methods: <strong>EasyPaisa, JazzCash, Bank Transfer</strong></li>
+          <li>Payment ke baad WhatsApp pe confirmation message aata hai</li>
+          <li>Receipt/transaction screenshot WhatsApp pe share karein</li>
+          <li>Fake payment screenshots provide karna strictly prohibited hai aur legal action ka basis ban sakta hai</li>
+          <li>Session ya service confirm hone ke baad reschedule karna possible hai — reasonable advance notice ke saath</li>
+        </ul>
+        <div class="warn-box">
+          <i data-lucide="alert-triangle" style="width:15px;height:15px;"></i>
+          <p>Koi bhi disputed payment ya chargeback attempt — bina valid reason ke — future services ke liye permanent ban result karega.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="s5" class="policy-section">
+      <div class="ps-header"><div class="ps-num">05</div><div class="ps-title">Refund Policy</div></div>
+      <div class="ps-body">
+        <p>Refunds ke baare mein hamari clear policy:</p>
+        <ul>
+          <li><strong>Full Refund:</strong> Agar service deliver nahi hui (e.g., session nahi hua, work deliver nahi hua)</li>
+          <li><strong>Partial Refund:</strong> Agar service partially deliver hui aur aap satisfied nahi hain — case-by-case basis par discuss hoga</li>
+          <li><strong>No Refund:</strong> Agar service fully delivered ho gayi (session ho gaya, resume review send ho gayi, etc.)</li>
+          <li><strong>No Refund:</strong> Change of mind after service delivery</li>
+          <li>Refund request WhatsApp pe karna hoga — 48 hours mein response guarantee</li>
+          <li>Approved refunds 3-5 business days mein original payment method pe wapas ho jaate hain</li>
+        </ul>
+        <p style="margin-top:.875rem;">Kisi bhi dispute mein hum fair aur transparent rehne ki koshish karte hain.</p>
+      </div>
+    </div>
+
+    <div id="s6" class="policy-section">
+      <div class="ps-header"><div class="ps-num">06</div><div class="ps-title">Custom Development Terms</div></div>
+      <div class="ps-body">
+        <p>Custom web development aur browser extension projects ke liye:</p>
+        <ul>
+          <li>Project start hone se pehle <strong>written scope agreement</strong> (WhatsApp pe) zaroori hai</li>
+          <li>Payment schedule project scope ke hisaab se decide hoga — typically 50% upfront, 50% on delivery</li>
+          <li>Revisions: Scope ke andar <strong>2 free revisions</strong> included hain — additional changes extra charge karenge</li>
+          <li>Timeline estimates approximate hain — complex projects mein delays possible hain, client ko informed rakha jaayega</li>
+          <li>Client aapna feedback aur content timely provide karne ka zimma leta hai</li>
+          <li>Incomplete payment ki soorat mein source code withhold kiya ja sakta hai</li>
+          <li>Full source code final payment ke baad deliver kiya jaata hai</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="s7" class="policy-section">
+      <div class="ps-header"><div class="ps-num">07</div><div class="ps-title">Intellectual Property</div></div>
+      <div class="ps-body">
+        <p><strong>Custom Development:</strong> Final payment ke baad, client project ka complete owner ban jaata hai — full source code, assets, aur rights.</p>
+        <p><strong>Mentorship Content:</strong> Session recordings, shared resources, aur materials sirf aapke personal use ke liye hain — redistribute karna prohibited hai.</p>
+        <p><strong>Our Portfolio:</strong> Hum completed client projects ko portfolio mein showcase kar sakte hain jab tak client confidentiality nahi maangi. Client ke specific request par project private rakha jaayega.</p>
+        <p style="margin-top:.875rem;"><strong>Internship Projects:</strong> Interns ke kaam par credit diya jaata hai. Client projects mein use ke waqt intern ka naam ya contribution acknowledge kiya jaata hai.</p>
+      </div>
+    </div>
+
+    <div id="s8" class="policy-section">
+      <div class="ps-header"><div class="ps-num">08</div><div class="ps-title">Limitation of Liability</div></div>
+      <div class="ps-body">
+        <p>ExtEngineer apni services best effort basis par provide karta hai. Ye limitations apply hoti hain:</p>
+        <ul>
+          <li>Career guidance aur mentorship advice informational hai — job guarantee nahi di jaati</li>
+          <li>Resume review se aapki resume improve hogi — hiring guarantee nahi</li>
+          <li>Browser extensions Chrome/Firefox policies ke changes ki wajah se affect ho sakti hain — ye hamari responsibility nahi</li>
+          <li>Third-party service (WhatsApp, EasyPaisa, etc.) downtime ya issues hamari responsibility nahi</li>
+          <li>Maximum liability kisi bhi case mein aapke dwara paid service amount tak limited hai</li>
+        </ul>
+        <p style="margin-top:.875rem;">Hum quality pe focus karte hain aur issues resolve karne ki koshish karte hain — please communicate karo agar kuch galat ho.</p>
+      </div>
+    </div>
+
+    <div id="s9" class="policy-section">
+      <div class="ps-header"><div class="ps-num">09</div><div class="ps-title">Code of Conduct</div></div>
+      <div class="ps-body">
+        <p>Ye behaviour expected hai sab services mein:</p>
+        <ul>
+          <li><strong>Respectful communication</strong> — mentor aur fellow interns ke saath</li>
+          <li>Abusive, harassing, ya threatening behaviour — immediate termination of services</li>
+          <li>Plagiarism ya academic dishonesty — internship certificate revoked</li>
+          <li>Shared confidential information (client projects, etc.) ko external share nahi karna</li>
+          <li>Sessions record karna prohibited hai without explicit permission</li>
+        </ul>
+        <p style="margin-top:.875rem;">Ye ek professional environment hai — sabko treat with respect karna required hai.</p>
+      </div>
+    </div>
+
+    <div id="s10" class="policy-section">
+      <div class="ps-header"><div class="ps-num">10</div><div class="ps-title">Governing Law & Contact</div></div>
+      <div class="ps-body">
+        <p>Ye terms Pakistan ke laws ke under govern hoti hain. Kisi bhi dispute mein, pehle direct communication ke zariye resolution ki koshish ki jaayegi.</p>
+        <p style="margin-top:.875rem;"><strong>Contact for Terms Questions:</strong></p>
+        <ul>
+          <li>WhatsApp: <strong>+92 319 6977218</strong></li>
+          <li>Response time: <strong>24 hours ya uss se pehle</strong></li>
+        </ul>
+        <p style="margin-top:.875rem;">Ye terms last updated: <strong>January 2026</strong>. Previous versions archive mein available hain on request.</p>
+      </div>
+    </div>
+
+    <div class="contact-strip">
+      <div class="contact-strip-text" style="position:relative;z-index:1;">
+        <h4>Terms ke baare mein kuch clear nahi?</h4>
+        <p>Service start se pehle sab clarify kar lo — WhatsApp pe poochho</p>
+      </div>
+      <a href="https://wa.me/923196977218?text=Hi%2C%20I%20have%20a%20question%20about%20your%20Terms." target="_blank" class="btn btn-lg" style="background:#fafafa;color:#09090b;border-color:#fafafa;position:relative;z-index:1;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#09090b"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="logo" style="font-size:.95rem;">
+      <div class="logo-icon" style="width:24px;height:24px;border-radius:6px;"><i data-lucide="puzzle" style="width:12px;height:12px;color:white;"></i></div>
+      ExtEngineer
+    </a>
+    <div class="footer-links">
+      <a href="index.html#internship">Internship</a>
+      <a href="index.html#services">Services</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+    <div class="footer-copy">© 2026 ExtEngineer</div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded',()=>{lucide.createIcons();if(localStorage.getItem('dark')==='1'){document.body.classList.add('dark');document.getElementById('toggle-icon').setAttribute('data-lucide','sun');lucide.createIcons()}});
+  function toggleDark(){const d=document.body.classList.toggle('dark');const i=document.getElementById('toggle-icon');i.setAttribute('data-lucide',d?'sun':'moon');lucide.createIcons();localStorage.setItem('dark',d?'1':'0')}
+</script>
+</body>
+</html>
